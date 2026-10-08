@@ -2,10 +2,10 @@
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
-> **Setup note:** this directory is not yet a git repository and has no GitHub
-> remote. `gh` resolves the repo from `git remote -v`, so run `git init` and add
-> a remote before the first issue is created. `gh` is installed (2.95.0) and
-> authed as `dhyoprd`. The repo is public.
+> **Repo:** `dhyoprd/chess-analyzer-discord-bot` (public). `gh` resolves it from
+> `git remote -v` automatically — no `--repo` flag needed when running inside this
+> clone. The five triage state labels already exist on the tracker; `bug`,
+> `enhancement`, and `wontfix` are GitHub defaults.
 
 ## Conventions
 
