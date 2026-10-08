@@ -1,0 +1,25 @@
+{
+  "name": "chess-activity-prototype",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "PROTOTYPE — kerangka Activity + sinkronisasi langkah. Bukan kode produksi.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@discord/embedded-app-sdk": "2.5.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "5.9.3",
+    "vite": "8.3.3"
+  }
+}

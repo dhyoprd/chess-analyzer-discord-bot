@@ -1,0 +1,5 @@
+# PROTOTYPE — berkas yang tidak boleh masuk repo.
+node_modules/
+dist/
+.env
+.logs/
