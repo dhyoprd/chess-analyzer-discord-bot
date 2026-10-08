@@ -1,0 +1,45 @@
+[project]
+name = "chessbot-backend"
+version = "0.1.0"
+description = "Backend otoritatif untuk Platform Catur Discord — state game, validasi langkah, jam catur, analisa Stockfish"
+readme = "README.md"
+requires-python = ">=3.14"
+license = { text = "GPL-3.0-or-later" }
+
+# Dependensi langsung saja — versi terkunci ada di requirements.txt.
+#
+# CATATAN: distribusi di PyPI bernama `chess`, bukan `python-chess`.
+# `python-chess` juga ada di PyPI tapi hanya alias yang menarik `chess`.
+# Impor di kode tetap `import chess`.
+dependencies = [
+    "chess>=1.11.2",
+    "fastapi>=0.142",
+    "uvicorn[standard]>=0.54",
+    "pydantic>=2.13",
+    "pydantic-settings>=2.15",
+    "discord-py>=2.7",
+    "aiosqlite>=0.22",
+    "websockets>=17.2",
+]
+
+[project.optional-dependencies]
+# Jalur render PNG belum diputuskan (lihat kabut peta) — Pillow hanya masuk
+# kalau opsi itu yang dipilih.
+render = ["pillow>=12.3"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "httpx2>=2.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chessbot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

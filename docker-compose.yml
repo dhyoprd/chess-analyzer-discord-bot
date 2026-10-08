@@ -1,0 +1,101 @@
+# Kerangka Docker Compose — Platform Catur Discord
+#
+# ⚠️ INI KERANGKA, BUKAN KONFIGURASI FINAL.
+#
+# Susunan layanan yang sebenarnya (mana yang di-container, mana yang tidak)
+# adalah keputusan ticket "Dev lokal & deployment di Windows" (#13). Berkas ini
+# sengaja belum menyelesaikan pertanyaan itu — ia hanya membuktikan bahwa
+# Docker + Compose berjalan dan memberi tempat untuk mengisi jawabannya nanti.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# KENDALA YANG SUDAH DIVERIFIKASI (jangan sampai terlewat saat #13 dikerjakan)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# 1. `engine/stockfish.exe` adalah binary WINDOWS (PE, magic 4D 5A). Ia TIDAK
+#    bisa dijalankan di dalam container Linux — sudah diuji, gagal. Docker di
+#    mesin ini memakai backend WSL2/Linux (`OSType: linux`), jadi container
+#    Linux adalah satu-satunya yang tersedia.
+#
+#    Akibatnya ada tiga jalan, dan #13 yang harus memilih:
+#      a. Backend dijalankan di HOST (tidak di-container), karena ia yang
+#         men-spawn Stockfish. Yang di-container hanya layanan tanpa engine.
+#      b. Backend di-container, tapi memakai binary Stockfish LINUX terpisah
+#         (unduh `stockfish-ubuntu-x86-64` dari rilis yang sama). Dua binary
+#         untuk satu engine — harus dijaga sinkron versinya.
+#      c. Container Windows — tidak tersedia di Docker Desktop dengan backend
+#         WSL2 Linux.
+#
+# 2. Quick tunnel `cloudflared` butuh ~60-90 detik sebelum hostname-nya bisa
+#    di-resolve (diuji). Jangan menaruh tunnel di dalam compose dengan asumsi
+#    ia "siap" seketika.
+#
+# 3. Jam catur dijeda saat bot mati (ADR-0003). Apa pun bentuk compose-nya,
+#    backend wajib menyimpan timestamp monotonic + sisa waktu, dan menghitung
+#    ulang jeda saat start. Restart container adalah "bot mati".
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: chess-platform
+
+# Nilai bersama; token & secret yang sesungguhnya lewat .env (tidak di-commit).
+x-common-env: &common-env
+  TZ: Asia/Makassar
+  PYTHONUNBUFFERED: "1"
+
+services:
+  # Backend otoritatif (ADR-0002): state papan, jam catur, analisa Stockfish.
+  #
+  # CATATAN: profil `container` membuat layanan ini TIDAK ikut `docker compose up`
+  # secara default. Alasannya kendala #1 di atas — backend butuh Stockfish, dan
+  # keputusan cara menjalankannya belum diambil (#13). Hapus profil ini setelah
+  # #13 memutuskan.
+  backend:
+    profiles: ["container"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      <<: *common-env
+      # Path engine di dalam container — hanya berlaku kalau #13 memilih opsi (b).
+      STOCKFISH_PATH: /app/engine/stockfish
+    volumes:
+      # State otoritatif. Harus bertahan lintas restart (ADR-0003).
+      - ./data:/app/data
+      # Baca-saja: binary engine tidak boleh diubah dari dalam container.
+      - ./engine:/app/engine:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/sehat',timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Bot Discord: slash command, turnamen, embed. Satu app merangkap bot + Activity.
+  bot:
+    profiles: ["container"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["python", "-m", "chessbot.bot"]
+    environment:
+      <<: *common-env
+      # Sengaja TIDAK memakai `${VAR:?}` — Compose meng-interpolasi SEMUA layanan
+      # sebelum menyaring profil, jadi penjaga itu akan menggagalkan
+      # `docker compose config` walaupun layanan ini tidak ikut dijalankan.
+      # Validasi token adalah tugas aplikasi saat start.
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+# CATATAN tentang Activity: dev server-nya kemungkinan besar TIDAK di-container.
+# Ia harus dijangkau cloudflared dan di-reload cepat saat kode berubah; Vite di
+# host lebih sederhana. Ini juga keputusan #13.
+
+# CATATAN tentang cloudflared: jangan dijadikan layanan compose. Ia dijalankan
+# manual/di luar compose supaya URL tunnel yang berubah tiap restart bisa dibaca
+# manusia dan dimasukkan ke Developer Portal. Keputusan #13.
+
+volumes: {}
