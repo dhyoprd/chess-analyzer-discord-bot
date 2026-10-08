@@ -102,6 +102,13 @@ Belum ada Discord Application untuk proyek ini. Urutan pembuatannya:
    server Discord Anda. Tidak perlu verifikasi app untuk pemakaian server sendiri.
 5. **Buka Activity** — di voice channel, klik ikon Activity dan pilih app ini.
 
+## Tangkapan layar
+
+`docs/tangkapan-layar.png` — hasil render sungguhan di Chrome headless setelah
+`1.e4`. Perhatikan: **"giliran hitam"** ditampilkan, dan panel riwayat berisi
+`1. e4 (e2e4)`. Tangkapan ini juga memperlihatkan penegakan giliran bekerja —
+klik berikutnya pada bidak hitam diabaikan karena bukan giliran pemain ini.
+
 ## Yang sudah terverifikasi (sebelum Anda mencoba)
 
 Semua di bawah ini dijalankan sungguhan, bukan klaim dari dokumen.
