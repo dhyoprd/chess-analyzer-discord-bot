@@ -14,15 +14,19 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Analisa** — proses evaluasi engine atas seluruh langkah sebuah game. Menghasilkan akurasi tiap pemain dan daftar langkah bermasalah.
 
-**Klasifikasi langkah** — penilaian kualitas satu langkah berdasarkan selisih eval sebelum dan sesudah. Tiga tingkat, memakai ambang lichess:
+**Klasifikasi langkah** — penilaian kualitas satu langkah berdasarkan **selisih win-chance sebelum dan sesudah langkah**, bukan selisih centipawn mentah. Ini mengikuti Lichess. Tiga tingkat:
 
-| Tingkat | Ambang |
+| Tingkat | Selisih win-chance |
 |---|---|
-| Inaccuracy | 50 centipawn |
-| Mistake | 100 centipawn |
-| Blunder | 300 centipawn |
+| Inaccuracy | ≥ 0.1 |
+| Mistake | ≥ 0.2 |
+| Blunder | ≥ 0.3 |
 
-**Akurasi** — skor 0-100% per pemain per game, dihitung dengan rumus lichess (berbasis win-percentage, bukan centipawn mentah).
+Win-chance dihitung dengan `wc(cp) = 2/(1 + exp(-0.00368208 × cp)) − 1`, pada skala −1 sampai +1, dengan cp di-clamp ke ±1000 lebih dulu. Selisihnya dibalik sesuai pihak yang melangkah, sehingga perbandingan selalu dari sudut pandang pelangkah.
+
+Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimbang adalah blunder besar, tapi kehilangan 300cp di posisi yang sudah menang telak hampir tidak berarti apa-apa. Centipawn tidak punya arti bagi manusia tanpa konteks posisi.
+
+**Akurasi** — skor 0-100% per pemain per game, dihitung dengan rumus Lichess (berbasis win-percentage, bukan centipawn mentah).
 
 **Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari game lawan manusia. Game lawan komputer tidak mengubah rating. Game turnamen ikut mengubah rating.
 
