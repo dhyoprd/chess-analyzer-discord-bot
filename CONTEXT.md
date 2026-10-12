@@ -8,7 +8,9 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Bot** — aplikasi Discord berbasis slash command dan pesan. Di proyek ini: menyediakan `/challenge`, `/stats`, dan mengelola turnamen. Satu application object Discord merangkap keduanya (Activity dan bot).
 
-**Game** — satu pertandingan catur antara dua pemain, dari langkah pertama sampai berakhir. Memiliki varian, format jam, hasil, dan alasan berakhir.
+**Game** — satu permainan catur antara dua pemain, dari langkah pertama sampai berakhir. Memiliki varian, format jam, hasil, dan alasan berakhir.
+
+**Pertandingan** — satu slot bracket turnamen knockout: dua pemain yang harus menghasilkan tepat satu pemenang. Berbeda dari game, satu pertandingan bisa memuat beberapa game (game pertama, game ulang, armageddon). Di luar turnamen tidak ada pertandingan — hanya game.
 
 **Langkah (Move)** — satu giliran pemain, dalam notasi SAN. Setiap langkah menyimpan FEN setelahnya, waktu berpikir, eval, dan klasifikasi.
 
@@ -40,6 +42,8 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Ditinggalkan** — status game yang tidak menerima langkah selama 24 jam **waktu bot hidup**. Saat bot mati, hitungannya berhenti — bot yang mati berhari-hari tidak menghukum pemain. Game tetap dianalisa sampai langkah terakhir, tanpa pemenang.
 
+Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — tapi pertandingannya dimenangkan pemain yang tidak sedang giliran, karena pertandingan knockout wajib menghasilkan tepat satu pemenang. Hasil papan dan hasil pertandingan dicatat terpisah.
+
 **Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya.
 
 **Kategori kecepatan** — penggolongan game berdasarkan perkiraan durasi totalnya: **bullet**, **blitz**, **rapid**, **classical**. Diturunkan dari format jam, bukan disimpan terpisah. Ambangnya mengikuti Lichess.
@@ -52,7 +56,23 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Varian** — bentuk aturan catur yang dimainkan. Proyek ini mendukung **catur standar** dan **Chess960** (posisi awal acak dari 960 kemungkinan).
 
-**Turnamen** — kompetisi format **gugur (knockout)** antara 4/8/16 pemain. Siapa pun boleh membuatnya tanpa admin. Game turnamen mengubah rating.
+**Turnamen** — kompetisi format **gugur (knockout)** antara 4–16 pemain, dilengkapi **bye** ke pangkat dua terdekat. Siapa pun boleh membuatnya tanpa admin; pembuat otomatis terdaftar dan menjadi **pengendali**-nya. Game yang benar-benar dimainkan mengubah rating; walkover dan bye tidak. Satu guild hanya boleh punya satu turnamen aktif.
+
+**Pengendali** — pemain yang memegang kendali administratif atas satu turnamen: menutup pendaftaran dan membatalkannya. Awalnya pembuat; berpindah ke peserta terlama yang masih terdaftar bila pembuat mundur sebelum turnamen dimulai.
+
+**Pendaftaran** — jendela saat pemain bisa masuk dan keluar dari turnamen, sebelum bracket disusun. Ditutup oleh pengendali, atau otomatis setelah batas waktu.
+
+**Bye** — pemain yang lolos satu ronde tanpa bertanding, karena jumlah peserta bukan pangkat dua. Bye diberikan ke unggulan teratas dan **tidak** mengubah rating.
+
+**Walkover** — kemenangan tanpa game, karena lawan tidak hadir atau meninggalkan pertandingan di tengah jalan. **Tidak** mengubah rating — tidak ada game yang dimainkan.
+
+**Mundur (withdraw)** — pemain keluar dari turnamen **sebelum pertandingannya dimulai**; lawan otomatis maju. Berbeda dari walkover, yang terjadi setelah pertandingan berjalan. Mundur sebelum bracket disusun boleh ditarik kembali; setelah bracket disusun, mundur bersifat final.
+
+**Masuk** — tindakan pemain menekan tombol pada pesan pairing untuk menyatakan kehadirannya. Pertandingan dimulai saat **kedua** pemain sudah masuk. Tidak menekan sampai batas waktu berarti walkover.
+
+**Batas waktu pertandingan** — lama bot menunggu pemain menekan Masuk atau menyelesaikan game, dihitung dalam **waktu bot hidup** (bukan waktu nyata), konsisten dengan definisi Ditinggalkan. Lewat batas ini, pertandingan diputuskan sebagai walkover secara otomatis.
+
+**Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam (hitam 80% dari waktu putih), dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
 
 **Lawan komputer** — mode bermain melawan Stockfish pada tingkat preset (800/1200/1600/2000 Elo). **Tidak** memengaruhi rating.
 
