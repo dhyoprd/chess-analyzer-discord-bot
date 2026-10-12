@@ -38,7 +38,17 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Jam catur** — waktu berpikir yang tersisa untuk tiap pemain. Dijeda saat bot mati; **tetap berjalan** saat pemain menutup Activity. Kehabisan waktu = kalah langsung.
 
-**Ditinggalkan** — status game yang tidak menerima langkah lebih dari 24 jam. Game tetap dianalisa sampai langkah terakhir, tanpa pemenang.
+**Ditinggalkan** — status game yang tidak menerima langkah selama 24 jam **waktu bot hidup**. Saat bot mati, hitungannya berhenti — bot yang mati berhari-hari tidak menghukum pemain. Game tetap dianalisa sampai langkah terakhir, tanpa pemenang.
+
+**Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya.
+
+**Kategori kecepatan** — penggolongan game berdasarkan perkiraan durasi totalnya: **bullet**, **blitz**, **rapid**, **classical**. Diturunkan dari format jam, bukan disimpan terpisah. Ambangnya mengikuti Lichess.
+
+**Pool rating** — ruang lingkup tempat sebuah rating berlaku. Platform bisa punya satu rating untuk semua game, atau rating terpisah per kategori kecepatan (seperti Lichess). Rating selalu terikat pada satu pool.
+
+**Pemain bayangan** — pemain yang berasal dari game impor (nama di PGN), bukan dari Discord. Tidak punya ID Discord, tidak muncul di klasemen, dan bisa diklaim oleh pemain sungguhan nanti.
+
+**Challenge** — tawaran bermain dari satu pemain ke pemain lain lewat bot: format jam, pilihan warna, dan batas waktu berlaku. Menerima challenge berarti memulai game. Challenge yang tidak dijawab akan kedaluwarsa.
 
 **Varian** — bentuk aturan catur yang dimainkan. Proyek ini mendukung **catur standar** dan **Chess960** (posisi awal acak dari 960 kemungkinan).
 
