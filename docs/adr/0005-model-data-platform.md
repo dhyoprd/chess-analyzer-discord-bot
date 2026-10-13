@@ -31,3 +31,4 @@ Satu database **SQLite** diakses lewat **SQLAlchemy 2.1 async + Alembic**, denga
 - Skema hidup dan arsip dalam satu tabel berarti kueri `/stats` menyentuh tabel yang juga menampung data panas. Indeks yang dipilih (tiga indeks inti) dibuat untuk itu.
 - "Ditinggalkan" **mengecualikan downtime bot** (dihitung dari waktu bot benar-benar hidup, memakai `bot_uptime`), supaya bot yang mati 30 jam tidak menghukum pemain atas kegagalan infrastruktur — konsisten dengan alasan ADR-0003.
 - Definisi **Ditinggalkan** di `CONTEXT.md` diperbarui mengikuti keputusan ini.
+- **Diamendemen oleh [ADR-0007](0007-pencocokan-klien-ke-game.md)**: aturan "klien mencocokkan diri lewat `channel_id` + `status=playing`" digantikan oleh identitas pemain terverifikasi + rujukan game eksplisit. Kolom `games.channel_id` tetap ada untuk menempatkan pesan bot, tapi bukan untuk mencocokkan klien.

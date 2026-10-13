@@ -10,6 +10,12 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Game** — satu permainan catur antara dua pemain, dari langkah pertama sampai berakhir. Memiliki varian, format jam, hasil, dan alasan berakhir.
 
+**Papan** — tampilan permainan di dalam Activity: posisi, langkah, dan jam. Satu Activity menampilkan satu papan pada satu waktu.
+
+**Pemilih game** — daftar game hidup milik pemain, ditampilkan di Activity saat ia punya lebih dari satu. Memilih satu game membuka papannya. Seorang pemain hanya bisa menempel ke game di mana ia peserta.
+
+**Buka Papan** — tindakan pemain membuka papan sebuah game dari Discord. Berbeda dari **Masuk**, yang menyatakan kehadiran; kehadiran tidak membuka papan, dan papan bisa dibuka tanpa menekan Masuk.
+
 **Pertandingan** — satu slot bracket turnamen knockout: dua pemain yang harus menghasilkan tepat satu pemenang. Berbeda dari game, satu pertandingan bisa memuat beberapa game (game pertama, game ulang, armageddon). Di luar turnamen tidak ada pertandingan — hanya game.
 
 **Langkah (Move)** — satu giliran pemain, dalam notasi SAN. Setiap langkah menyimpan FEN setelahnya, waktu berpikir, eval, dan klasifikasi.
@@ -84,7 +90,7 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Guild** — satu server Discord. Proyek ini dirancang untuk **satu guild** saja.
 
-**Instance** — satu sesi Activity yang sedang berjalan, diidentifikasi `instance_id`. Backend memakai ini untuk memverifikasi klien.
+**Instance** — satu sesi Activity yang sedang berjalan, diidentifikasi `instance_id`. Setiap kali Activity dibuka, instance baru dibuat; semua yang bergabung ke instance yang sama mendapat `instance_id` yang sama. Backend **tidak** memakainya untuk mengenali klien atau mencocokkannya ke game — `instance_id` berubah tiap Activity dibuka, jadi ia tidak bisa menjadi kunci apa pun yang bertahan.
 
 **Embed** — pesan kaya berformat di Discord. Batas: 2000 karakter total, 25 field.
 
