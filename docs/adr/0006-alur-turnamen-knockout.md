@@ -36,6 +36,7 @@ Riset juga menemukan bahwa **tidak ada preseden yang bisa ditiru**: Lichess dan 
 ## Konsekuensi
 
 - **ADR-0005 diperluas, bukan digantikan.** Tabel `tournaments` dan kolom tambahan di `tournament_matches` harus ditambahkan ke skema saat implementasi.
+- **Istilah "provisional" kini didefinisikan [ADR-0008](0008-konfigurasi-glicko-2.md)**: pemain provisional adalah pemain dengan **RD ≥ 110**, dan ambang itu sama di seluruh platform termasuk seeding. Sebelumnya keputusan ini memakai kata "provisional" tanpa definisi. Pemain yang belum pernah bermain game berating juga diperlakukan sebagai provisional saat seeding — diacak.
 - **Tabel `players` tetap bercampur**, dan turnamen menambah satu penyaring lagi: peserta turnamen adalah `tournament_players`, bukan kueri atas `players`.
 - **Armageddon butuh bendera di `games`** yang membalik "remis" menjadi "hitam menang" **hanya untuk penentuan pemenang pertandingan** — bukan untuk hasil yang dicatat di `games`.
 - **Definisi `Ditinggalkan` di `CONTEXT.md` kini punya pengecualian turnamen**, dan istilah **Pertandingan** dipisahkan dari **Game** supaya slot bracket tidak lagi bernama sama dengan satu permainan catur.

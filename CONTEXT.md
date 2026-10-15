@@ -36,9 +36,9 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Akurasi** — skor 0-100% per pemain per game, dihitung dengan rumus Lichess (berbasis win-percentage, bukan centipawn mentah).
 
-**Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari game lawan manusia. Game lawan komputer tidak mengubah rating. Game turnamen ikut mengubah rating.
+**Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari game lawan manusia yang benar-benar dimainkan sampai selesai. **Tidak** mengubah rating: game lawan komputer, game impor, armageddon, walkover, bye, dan game yang ditinggalkan. Game turnamen yang dimainkan ikut mengubah rating. Setiap game selesai langsung memperbarui rating — tidak ada pembaruan berkala. Ketidakpastian rating (RD) melebar seiring waktu nyata sejak game berating terakhir, sehingga pemain yang lama hilang kembali dengan rating yang tidak lagi dipercaya penuh.
 
-**Provisional** — status pemain yang ratingnya belum mapan karena baru bermain sedikit game. Rating provisional ditampilkan dengan ketidakpastian lebar.
+**Provisional** — status pemain yang ratingnya belum mapan karena **ketidakpastiannya (RD) masih lebar**, bukan karena jumlah game yang sedikit. Ambangnya satu dan berlaku di seluruh platform, termasuk penentuan unggulan turnamen. Pemain provisional tetap tampil di klasemen, dengan penanda. Pemain yang belum pernah memainkan satu pun game berating **belum punya rating** dan belum muncul di klasemen.
 
 **Pemain (Player)** — profil yang dibuat otomatis dari ID Discord saat pertama bermain. Tidak ada registrasi. Menyimpan rating, statistik, dan tautan opsional ke akun Lichess/Chess.com.
 
@@ -54,7 +54,7 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Kategori kecepatan** — penggolongan game berdasarkan perkiraan durasi totalnya: **bullet**, **blitz**, **rapid**, **classical**. Diturunkan dari format jam, bukan disimpan terpisah. Ambangnya mengikuti Lichess.
 
-**Pool rating** — ruang lingkup tempat sebuah rating berlaku. Platform bisa punya satu rating untuk semua game, atau rating terpisah per kategori kecepatan (seperti Lichess). Rating selalu terikat pada satu pool.
+**Pool rating** — ruang lingkup tempat sebuah rating berlaku. Platform bisa punya satu rating untuk semua game, atau rating terpisah per kategori kecepatan (seperti Lichess). Rating selalu terikat pada satu pool. Di platform ini hanya ada **satu pool**: semua game berating — semua kategori kecepatan dan semua varian, termasuk Chess960 — memakai rating yang sama.
 
 **Pemain bayangan** — pemain yang berasal dari game impor (nama di PGN), bukan dari Discord. Tidak punya ID Discord, tidak muncul di klasemen, dan bisa diklaim oleh pemain sungguhan nanti.
 
