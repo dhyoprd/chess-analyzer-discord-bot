@@ -38,5 +38,5 @@ Dua temuan yang menguatkan keputusan ini:
 - `python-chess` belum menguji 3.14. Bila ia merilis versi yang memecahkan 3.14, kita yang menemukannya lebih dulu. Mitigasi: `uv.lock` memaku versi, dan `verify_chess.py` adalah gerbang yang menangkap regresi.
 - `python-chess` tidak punya wheel untuk 3.14 sehingga dipasang dari sdist. Tidak berbahaya karena murni Python, tapi berarti pemasangan butuh build backend. Pemasangan berikutnya sebaiknya dari `uv.lock`, bukan `uv pip install` langsung.
 - Mesin ini punya 3.14.3 juga; pin ke **3.14.4** secara eksplisit agar lingkungan reproducible.
-- Bila nanti pindah ke VPS, image dasarnya harus `python:3.14` — sudah tercermin di `backend/Dockerfile`.
+- Bila nanti pindah ke VPS, Python 3.14 harus tersedia di sana. **Diamendemen oleh [ADR-0010](0010-dev-lokal-dan-deployment-windows.md)**: rujukan ke `backend/Dockerfile` tidak lagi berlaku — berkas itu dihapus bersama `docker-compose.yml` karena Docker tidak dipakai. `uv.lock` tetap memaku versi paket, dan itulah yang menjaga kesetaraan lingkungan.
 - Kabut "Python 3.13 vs 3.14 untuk backend" **selesai** dan bisa dihapus dari peta.

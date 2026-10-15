@@ -27,4 +27,5 @@ Bot, backend, dan jam catur berjalan di komputer pengguna (Windows). Frontend Ac
 - Backend **wajib** menyimpan timestamp monotonic dan sisa waktu tiap pemain, lalu menghitung ulang jeda saat start. Ini memperbesar item "bangun jam catur" yang sudah besar.
 - Tidak ada jaminan bot online. `/challenge` dan turnamen bisa gagal di tengah, dan pemain akan mengalaminya.
 - Turnamen dengan jadwal ronde menjadi rapuh — peserta tidak datang bisa berarti bot mati, bukan pemain kabur. Ticket alur turnamen harus memperhitungkan ini.
-- Migrasi ke VPS nanti sebaiknya tetap mudah: orkestrasi Docker Compose dan konfigurasi lewat environment variable, supaya perpindahan tidak menuntut penulisan ulang.
+- Migrasi ke VPS nanti sebaiknya tetap mudah: konfigurasi lewat environment variable, supaya perpindahan tidak menuntut penulisan ulang.
+- **Diamendemen oleh [ADR-0010](0010-dev-lokal-dan-deployment-windows.md)**: jalur migrasi VPS bukan lagi "orkestrasi Docker Compose" melainkan `uv sync` + unit systemd + binary Stockfish Linux. Docker dibuang karena Docker Desktop tidak bisa start tanpa sesi login dan VM WSL2 mematikan dirinya saat idle. Konfigurasi tetap lewat environment variable, jadi sifat portabelnya bertahan.

@@ -96,7 +96,7 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Instance** — satu sesi Activity yang sedang berjalan, diidentifikasi `instance_id`. Setiap kali Activity dibuka, instance baru dibuat; semua yang bergabung ke instance yang sama mendapat `instance_id` yang sama. Backend **tidak** memakainya untuk mengenali klien atau mencocokkannya ke game — `instance_id` berubah tiap Activity dibuka, jadi ia tidak bisa menjadi kunci apa pun yang bertahan.
 
-**Embed** — pesan kaya berformat di Discord. Batas: 2000 karakter total, 25 field.
+**Embed** — pesan kaya berformat di Discord. Batas: **6000 karakter gabungan** (title + description + field.name + field.value + footer.text + author.name) untuk semua embed dalam satu pesan; **25 field** per embed; **10 embed** per pesan. Per-field: description 4096, title dan field.name 256, **field.value 1024**, footer.text 2048. Yang mengikat untuk daftar langkah adalah `field.value` 1024, bukan total 6000. Discord **menghitung** penanda markdown seperti `**tebal**` sebagai bagian dari batas ini.
 
 ## Istilah yang sengaja dihindari
 
