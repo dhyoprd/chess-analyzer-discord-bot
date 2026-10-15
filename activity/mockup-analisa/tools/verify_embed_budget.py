@@ -212,6 +212,59 @@ def main():
             for p in prob_d:
                 print(f"       {p}")
 
+        # ── PEMENANG: struktur B + daftar langkah penuh + semua blunder ────
+        # Pilihan pemilik proyek menggabungkan dua hal yang belum pernah ada
+        # bersama: struktur varian B (papan + hitungan) DAN daftar langkah
+        # penuh DAN seluruh blunder. Gabungan inilah yang harus diukur --
+        # masing-masing bagian muat sendirian, tapi pertanyaannya apakah
+        # gabungannya muat.
+        bl_all = "\n".join(
+            f"{m['move_no']}{'.' if m['color'] == 'white' else '…'} {m['san']} → "
+            f"{m.get('best_san') or m['best_uci'] or '—'}"
+            for m in g["moves"] if m["classification"] == "blunder") or "—"
+        # Deskripsi yang SAMA PERSIS dengan yang dipakai mockup varian B,
+        # TERMASUK penanda markdown **tebal**. Discord menghitung karakter
+        # penanda itu sebagai bagian dari field.value -- jadi mengabaikannya
+        # membuat verifikator melaporkan angka lebih kecil daripada mockup
+        # (1.693 vs 1.705) dan kedua jalur tidak bisa dibandingkan.
+        desc_b = (f"**Putih** {g['white']} — {fmt_acc(g['accuracy']['white'])}\n"
+                  f"**Hitam** {g['black']} — {fmt_acc(g['accuracy']['black'])}\n\n"
+                  f"Akurasi dihitung dari seluruh {g['plies']} langkah. "
+                  f"Klik **Buka Papan** untuk melihat eval bar dan menelusuri tiap langkah.")
+
+        w_parts = [
+            ("title", "title", f"{g['white']} vs {g['black']}"),
+            ("description", "description", desc_b),
+            ("field.name", "field: Putih", "Putih"),
+            ("field.value", "field: Putih.v",
+             f"{g['counts']['white']['inaccuracy']} ?!  "
+             f"{g['counts']['white']['mistake']} ?  "
+             f"{g['counts']['white']['blunder']} ??"),
+            ("field.name", "field: Hitam", "Hitam"),
+            ("field.value", "field: Hitam.v",
+             f"{g['counts']['black']['inaccuracy']} ?!  "
+             f"{g['counts']['black']['mistake']} ?  "
+             f"{g['counts']['black']['blunder']} ??"),
+            ("field.name", "field: Blunder", "Blunder"),
+            ("field.value", "field: Blunder.v", bl_all),
+            ("field.name", "field: Urutan", "Urutan langkah"),
+            ("field.value", "field: Urutan.v", full),
+            ("footer", "footer", "Stockfish 19 · 1.000.000 node/posisi"),
+        ]
+        total_w, nf_w, prob_w = measure(w_parts)
+        n_bl = sum(1 for m in g["moves"] if m["classification"] == "blunder")
+        print(f"\n  PEMENANG (struktur B + daftar penuh + {n_bl} blunder):")
+        print(f"    total {total_w} / {LIMIT_TOTAL} ({total_w / LIMIT_TOTAL * 100:.1f}%) · "
+              f"{nf_w} field")
+        for kind, label, text in w_parts:
+            lim = {"field.value": LIMIT_FIELD_VALUE, "description": LIMIT_DESC,
+                   "title": LIMIT_TITLE, "field.name": LIMIT_FIELD_NAME}.get(kind)
+            if lim and len(text) > 0.8 * lim:
+                print(f"      ! {label}: {len(text)} / {lim} "
+                      f"({len(text) / lim * 100:.0f}% dari batas)")
+        check(f"Pemenang muat untuk game {g['plies']} ply", not prob_w,
+              "; ".join(prob_w) if prob_w else f"sisa {LIMIT_TOTAL - total_w} karakter")
+
     # ── Di ply berapa daftar penuh benar-benar menabrak batas? ────────────
     # Ini pertanyaan yang sebenarnya menentukan: kalau daftar penuh muat
     # sampai jauh di atas panjang game normal, maka memangkasnya adalah

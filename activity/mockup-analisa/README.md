@@ -67,20 +67,58 @@ mockup salah walau terlihat wajar.
 python -I tools/run_all.py <path-ke-stockfish.exe>
 ```
 
-Lima langkah: hasilkan data → cocokkan rumus dengan ADR-0009 → uji anggaran
-embed → ubah ke `.js` → tangkap layar. Terakhir dijalankan: **5/5 lulus**,
-termasuk **10/10 nilai emas Lichess** dan **11/11 tangkapan layar**.
+Enam langkah: hasilkan data → cocokkan rumus dengan ADR-0009 → uji anggaran
+embed → **periksa panel anggaran mockup menghitung bagian yang benar** → ubah ke
+`.js` → tangkap layar. Terakhir dijalankan: **6/6 lulus**, termasuk **10/10 nilai
+emas Lichess** dan **11/11 tangkapan layar**.
+
+Langkah 4 berjalan di **Node**, bukan Python: ia menjalankan `src/mockup.js` yang
+sesungguhnya dengan DOM palsu dan membaca angka yang benar-benar ditampilkan
+panel. Ia ada karena dua bug "menghitung bagian yang salah" sudah lolos dari
+langkah 3 — langkah 3 mengukur *salinan* logikanya, langkah 4 mengukur *kodenya*.
+Keduanya kini harus melaporkan angka yang sama (1.705 pada game 137 ply).
+
+## ✅ Keputusan (pemilik proyek, 2026-10-15)
+
+| Pertanyaan | Keputusan |
+|---|---|
+| **Embed Discord** | **Varian B — "papan dulu"** |
+| **Panel Activity** | **Varian B — papan + eval bar + grafik di atas, filmstrip di bawah** |
+| **Daftar langkah di embed** | **Tampilkan daftar penuh** (bukan dipangkas) |
+| **Blunder di embed** | **Selalu tampilkan semua**, walau 20+ |
+
+**Catatan penting:** pilihan ini menggabungkan dua hal yang **belum pernah ada
+bersama** di varian mana pun — struktur B (papan + hitungan) **dan** daftar
+langkah penuh **dan** seluruh blunder. Karena itu gabungannya diukur terpisah,
+bukan diasumsikan muat karena bagian-bagiannya muat sendirian:
+
+| Game | Total | Field terbesar |
+|---|---|---|
+| Immortal (45 ply, 4 blunder) | 630 / 6000 (**10,5%**) | — |
+| Self-play (137 ply, **41 blunder**) | 1.705 / 6000 (**28,4%**) | `field.urutan.v` 843 / 1024 (**82%**) |
+
+Keduanya muat. Tapi perhatikan baris kedua: pada game 137 ply dengan 41 blunder,
+daftar langkah penuh memakai **82% dari batas `field.value`**. Ini bukan lagi
+"jauh di bawah batas" — game yang lebih panjang akan menyentuhnya. Ambangnya
+sekitar **ply 170**.
+
+**Yang perlu diingat saat implementasi:** keputusan "tampilkan daftar penuh"
+berlaku sampai sekitar ply 170. Di atas itu embed **akan ditolak Discord**
+dengan `Bad Request`. Implementasinya butuh penjaga pemotongan, bukan karena
+keputusannya salah, tapi karena batas keras `field.value` 1024 memang ada.
+Titik potong yang disarankan: **ply 170** (~87 langkah penuh).
 
 ## Tiga varian
 
-Varian di sini berbeda **struktur**, bukan warna:
+Varian di sini berbeda **struktur**, bukan warna. **B adalah yang dipilih.**
 
 - **A — Ringkas.** Akurasi di depan sebagai angka terbesar; daftar langkah hanya
   yang bermasalah. Embed kecil, panel Activity menaruh tabel momen kritis di atas
   dan urutan lengkap sebagai rujukan.
-- **B — Papan dulu.** Papan dan grafik eval jadi pusat. Embed memakai thumbnail
-  papan dan hanya meringkas hitungan; panel Activity menaruh papan + eval bar +
-  grafik di baris atas, filmstrip langkah di bawah.
+- **B — Papan dulu. ✅ DIPILIH.** Papan dan grafik eval jadi pusat. Embed memakai
+  thumbnail papan, hitungan per pemain, seluruh blunder, dan urutan langkah penuh;
+  panel Activity menaruh papan + eval bar + grafik di baris atas, filmstrip langkah
+  di bawah.
 - **C — Analis.** Daftar langkah jadi sumbu navigasi. Embed hanya menampilkan
   blunder + urutan yang bermasalah; panel Activity membuat daftar langkah bisa
   diklik untuk menelusuri, dengan papan dan detail langkah di samping.
@@ -139,11 +177,12 @@ Skrip pembuktian: `tools/verify_embed_budget.py` (dijalankan dengan `python -I`)
 
 ## Yang perlu dinilai
 
-- **Embed mana** yang Anda buka di channel — dan apakah daftar langkahnya
-  kurang/kebanyakan?
-- Di panel Activity: **eval bar + daftar**, atau **grafik + filmstrip**, atau
-  **daftar yang jadi pusat**?
-- Apakah blunder harus **selalu** ditampilkan walau ada 20+?
+Sudah dijawab 2026-10-15 — lihat **Keputusan** di atas. Pertanyaan aslinya,
+kalau nanti ada yang ingin ditinjau ulang:
+
+- Embed mana yang dibuka di channel — daftar langkahnya kurang/kebanyakan?
+- Panel Activity: eval bar + daftar, grafik + filmstrip, atau daftar yang jadi pusat?
+- Apakah blunder harus selalu ditampilkan walau 20+?
 - Pesan progres: cukup satu baris, atau perlu sisa waktu?
 - Bagaimana membedakan lawan komputer — lencana saja cukup?
 
@@ -151,14 +190,15 @@ Skrip pembuktian: `tools/verify_embed_budget.py` (dijalankan dengan `python -I`)
 
 ```
 index.html                    mockup (satu berkas, klik dua kali)
-src/mockup.js                 tiga varian × dua permukaan
+src/mockup.js                 tiga varian × dua permukaan (B = dipilih)
 src/shared.js                 pemformat angka & teks bersama
 data/analisa-nyata.js         data Stockfish nyata (dihasilkan, jangan diedit tangan)
-tools/run_all.py              jalankan semua pemeriksaan di bawah, satu perintah
+tools/run_all.py              jalankan semua pemeriksaan, satu perintah
 tools/generate_data.py        jalankan Stockfish → JSON
 tools/to_js.py                JSON → .js yang bisa dimuat <script>
 tools/crosscheck_formulas.py  buktikan rumusnya identik dengan ADR-0009
-tools/verify_embed_budget.py  uji anggaran karakter terhadap batas resmi Discord
+tools/verify_embed_budget.py  uji anggaran terhadap batas resmi Discord
+tools/check_budget_consistency.mjs  pastikan mockup menghitung bagian yang benar
 tools/screenshot.py           tangkapan layar Chrome headless
 docs/tangkapan/               11 tangkapan layar
 ```
@@ -199,12 +239,22 @@ docs/tangkapan/               11 tangkapan layar
 | Nilai mate diperlakukan sebagai centipawn | `mate 3` jadi 3cp, delta `−0,0055` | Penjaga kewarasan di generator |
 | `game_accuracy` membagi nol pada daftar kosong | `ZeroDivisionError` pada game 0/1 ply | `crosscheck_formulas.py` |
 | Anggaran diukur dari HTML, bukan teks Discord | Panel menampilkan 3.977 karakter padahal ~200 | Pemeriksaan mata pada tangkapan layar |
-| Perbandingan delta dengan `==` | Dua implementasi yang setara aljabar gagal cocok di bit terakhir | `crosscheck_formulas.py` |
+| **Panel lupa menghitung `title` + `footer`** | Mockup 1.655 vs verifikator 1.693 | Membandingkan dua jalur pengukuran |
+| Deskripsi verifikator tidak sama dengan mockup | 1.242 vs 1.316 — mengukur hal berbeda | Membandingkan dua jalur pengukuran |
+| Verifikator mengabaikan penanda `**` | 1.693 vs 1.705 — Discord menghitungnya | Membandingkan dua jalur pengukuran |
+| Perbandingan delta dengan `==` | Dua implementasi setara aljabar gagal cocok di bit terakhir | `crosscheck_formulas.py` |
 | Harapan label klasifikasi salah tulis | 3 "GAGAL" padahal implementasinya sepakat | `crosscheck_formulas.py` |
+| `!array` dianggap benar untuk array kosong | Semua skenario dilaporkan GAGAL padahal lolos | `check_budget_consistency.mjs` |
 
 Pelajaran yang berulang: **hampir semua bug di atas terlihat wajar saat
 dilihat.** Yang menemukannya adalah skrip yang membandingkan angka, bukan
 membaca kode.
+
+Empat bug terakhir punya akar yang sama: **dua jalur yang seharusnya menghitung
+hal yang sama, menghitung hal yang berbeda.** Karena itu
+`check_budget_consistency.mjs` sekarang menjadi langkah tetap di `run_all.py` —
+selama kedua jalur tidak dipaksa melaporkan angka yang sama, mereka akan
+menyimpang lagi.
 
 ## Catatan untuk ADR-0009: tangga mate hanya menutup 2 dari 4 bentuk
 

@@ -5,6 +5,7 @@ Pakai: python -I run_all.py <stockfish.exe>
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -66,9 +67,20 @@ def main():
                       [PY, "-I", HERE / "crosscheck_formulas.py"]))
     hasil.append(step(3, "Anggaran embed terhadap batas resmi Discord",
                       [PY, "-I", HERE / "verify_embed_budget.py", DATA]))
-    hasil.append(step(4, "Data JSON -> JS untuk mockup",
+    # Langkah 4 memakai NODE, bukan Python: ia menjalankan src/mockup.js yang
+    # sesungguhnya dengan DOM palsu, lalu membaca angka yang benar-benar
+    # ditampilkan panel. Dua bug "menghitung bagian yang salah" sudah lolos
+    # dari langkah 3 karena langkah 3 mengukur salinan logika, bukan kodenya.
+    node = shutil.which("node")
+    if node:
+        hasil.append(step(4, "Panel anggaran mockup menghitung bagian yang benar",
+                          [node, HERE / "check_budget_consistency.mjs", DATA]))
+    else:
+        print("\n(node tidak ditemukan -- langkah 4 dilewati)")
+
+    hasil.append(step(5, "Data JSON -> JS untuk mockup",
                       [PY, "-I", HERE / "to_js.py", DATA, ROOT / "data" / "analisa-nyata.js"]))
-    hasil.append(step(5, "Tangkapan layar (butuh Chrome)",
+    hasil.append(step(6, "Tangkapan layar (butuh Chrome)",
                       [PY, "-I", HERE / "screenshot.py", CHROME, ROOT / "index.html",
                        ROOT / "docs" / "tangkapan"], optional=True))
 

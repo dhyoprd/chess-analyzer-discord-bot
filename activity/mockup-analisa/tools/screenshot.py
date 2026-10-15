@@ -17,6 +17,9 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # (nama, query) -- semua kombinasi yang layak dilihat manusia.
+# Tangkapan skenario memakai varian B karena itulah yang DIPILIH; A dan C
+# tetap diambil untuk kedua permukaan supaya alternatif yang ditolak tetap
+# terdokumentasi sebagai sumber primer.
 SHOTS = [
     ("embed-A", "variant=A&surface=embed&scenario=normal"),
     ("embed-B", "variant=B&surface=embed&scenario=normal"),
@@ -24,11 +27,11 @@ SHOTS = [
     ("activity-A", "variant=A&surface=activity&scenario=normal"),
     ("activity-B", "variant=B&surface=activity&scenario=normal"),
     ("activity-C", "variant=C&surface=activity&scenario=normal"),
-    ("embed-panjang", "variant=A&surface=embed&scenario=long"),
-    ("embed-komputer", "variant=A&surface=embed&scenario=engine"),
-    ("embed-ditinggalkan", "variant=A&surface=embed&scenario=abandoned"),
-    ("embed-impor", "variant=A&surface=embed&scenario=import"),
-    ("embed-1ply", "variant=A&surface=embed&scenario=oneply"),
+    ("embed-panjang", "variant=B&surface=embed&scenario=long"),
+    ("embed-komputer", "variant=B&surface=embed&scenario=engine"),
+    ("embed-ditinggalkan", "variant=B&surface=embed&scenario=abandoned"),
+    ("embed-impor", "variant=B&surface=embed&scenario=import"),
+    ("embed-1ply", "variant=B&surface=embed&scenario=oneply"),
 ]
 
 

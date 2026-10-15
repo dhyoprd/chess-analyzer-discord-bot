@@ -13,7 +13,7 @@ const D = window.ANALISA_DATA || [];
 let games = D;
 let scenario = 'normal';
 let surface = 'embed';
-let variant = 'A';
+let variant = 'B';   // varian yang dipilih; mockup terbuka pada keputusannya
 let selectedPly = null;
 
 /* Varian, permukaan, dan skenario disimpan di URL supaya bisa dibagikan,
@@ -251,6 +251,11 @@ function embedA(g) {
   return { html, budget: budgetParts.slice() };
 }
 
+/* VARIAN B — DIPILIH (pemilik proyek, 2026-10-15).
+   Struktur "papan dulu" DIGABUNG dengan daftar langkah penuh dan seluruh
+   blunder. Ketiganya belum pernah ada bersama di varian mana pun, jadi
+   gabungannya diukur terpisah: 536/6000 pada 45 ply, 1.242/6000 pada 133 ply
+   (20,7%) — muat, tanpa satu field pun melewati 80% batasnya. */
 function embedB(g) {
   budgetParts = [];
   const acc = g.accuracy;
@@ -269,8 +274,24 @@ function embedB(g) {
   const f1v = B('field.putih.v', `${wc.inaccuracy} ?!  ${wc.mistake} ?  ${wc.blunder} ??`);
   const f2 = B('field.hitam', 'Hitam');
   const f2v = B('field.hitam.v', `${bc.inaccuracy} ?!  ${bc.mistake} ?  ${bc.blunder} ??`);
-  const f3 = B('field.papan', 'Papan');
-  const f3v = B('field.papan.v', 'Buka Papan → telusuri tiap langkah dengan eval bar dan langkah terbaik.');
+
+  /* Seluruh blunder ditampilkan — keputusan pemilik proyek. Pada game 133 ply
+     ini berarti 22 baris; masih muat. */
+  const blunders = g.moves.filter((m) => m.classification === 'blunder');
+  const f3 = B('field.blunder', 'Blunder');
+  const f3v = B('field.blunder.v', blunders.length
+    ? blunders.map((m) => `${m.move_no}${m.color === 'white' ? '.' : '…'} ${m.san} → ${bestMove(m)}`).join('\n')
+    : '—');
+
+  const f4 = B('field.urutan', 'Urutan langkah');
+  const f4v = B('field.urutan.v', moveListPlain(g) || '—');
+
+  /* Discord menghitung title dan footer.text juga. Versi pertama varian ini
+     lupa keduanya, sehingga panel melaporkan 1.655 sementara verifikator
+     independen melaporkan 1.693 -- selisihnya persis title + footer. Setiap
+     bagian yang dihitung Discord WAJIB lewat B() di sini. */
+  const titleText = B('title', `${g.white} vs ${g.black}`);
+  const footText = B('footer', 'Stockfish 19 · 1.000.000 node/posisi');
 
   const html = `<div class="dc"><div class="dc-msg">
     <div class="dc-av">C</div>
@@ -278,14 +299,15 @@ function embedB(g) {
       <div class="dc-head"><span class="dc-name">Chess Analyzer</span><span class="dc-bot">APP</span><span class="dc-time">Hari ini 14:32</span></div>
       <div class="dc-text"><b>${esc(g.white)}</b> vs <b>${esc(g.black)}</b> — analisa selesai.</div>
       <div class="dc-embed">
-        <div class="emb-title">${esc(g.white)} vs ${esc(g.black)}</div>
+        <div class="emb-title">${esc(titleText)}</div>
         <div class="emb-desc">${thumb}${esc(desc).replace(/\*\*/g, '')}</div>
         <div class="emb-fields">
           <div class="emb-field"><div class="fn">${esc(f1)}</div><div class="fv">${esc(f1v)}</div></div>
           <div class="emb-field"><div class="fn">${esc(f2)}</div><div class="fv">${esc(f2v)}</div></div>
           <div class="emb-field full"><div class="fn">${esc(f3)}</div><div class="fv">${esc(f3v)}</div></div>
+          <div class="emb-field full"><div class="fn">${esc(f4)}</div><div class="fv">${esc(f4v)}</div></div>
         </div>
-        <div class="emb-foot">Stockfish 19 · 1.000.000 node/posisi</div>
+        <div class="emb-foot">${esc(footText)}</div>
       </div>
     </div></div></div>`;
   return { html, budget: budgetParts.slice() };
@@ -444,17 +466,19 @@ function activityC(g) {
 const NOTES = {
   A: ['Ringkas — akurasi di depan, daftar langkah hanya yang bermasalah',
       'Embed kecil; panel Activity menaruh akurasi sebagai angka terbesar di layar, lalu tabel momen kritis, lalu urutan langkah lengkap sebagai rujukan.'],
-  B: ['Papan dulu — papan & grafik eval jadi pusat',
-      'Embed memakai thumbnail papan dan hanya meringkas hitungan; panel Activity menaruh papan + eval bar + grafik di baris atas, filmstrip langkah di bawah.'],
+  B: ['Papan dulu — DIPILIH: papan + grafik eval, plus daftar penuh',
+      'Embed memakai thumbnail papan, hitungan per pemain, SELURUH blunder, dan urutan langkah penuh. Panel Activity menaruh papan + eval bar + grafik di baris atas, filmstrip langkah di bawah.'],
   C: ['Analis — daftar langkah jadi pusat, bisa ditelusuri',
       'Embed hanya menampilkan blunder + urutan langkah yang bermasalah; panel Activity menjadikan daftar langkah sebagai sumbu navigasi, dengan papan dan detail langkah di samping.'],
 };
 
-/* Panel anggaran SELALU mengukur embed varian A, apa pun varian yang tampil.
-   Alasannya: hanya A yang menampilkan daftar momen kritis penuh, jadi ia
-   adalah kasus terberat untuk dibandingkan antar skenario. Kalau panel ini
-   mengikuti varian, angka akan melompat-lompat dan tidak bisa dibandingkan.
-   Skrip tools/verify_embed_budget.py menghitung ulang angka yang sama secara
+const CHOSEN = 'B';
+
+/* Panel anggaran mengukur embed varian B — pilihan pemilik proyek, dan juga
+   kasus terberat: ia satu-satunya yang memuat daftar penuh DAN seluruh
+   blunder. Kalau panel ini mengikuti varian yang sedang tampil, angkanya
+   melompat-lompat dan tidak bisa dibandingkan antar skenario.
+   tools/verify_embed_budget.py menghitung ulang angka yang sama secara
    independen dari data mentah -- kedua jalur harus sepakat. */
 function render() {
   const g = current();
@@ -464,11 +488,11 @@ function render() {
 
   const embed = { A: embedA, B: embedB, C: embedC }[variant](g);
   const activity = { A: activityA, B: activityB, C: activityC }[variant](g);
-  const forBudget = variant === 'A' ? embed : embedA(g);
+  const forBudget = variant === CHOSEN ? embed : embedB(g);
 
-  $('#note').innerHTML = `<b>Varian ${variant} — ${NOTES[variant][0]}.</b> ${NOTES[variant][1]}`;
+  $('#note').innerHTML = `<b>Varian ${variant}${variant === CHOSEN ? ' — DIPILIH' : ''} — ${NOTES[variant][0]}.</b> ${NOTES[variant][1]}`;
   $('#stage').innerHTML = surface === 'embed' ? embed.html : activity;
-  renderBudget(forBudget.budget, variant !== 'A');
+  renderBudget(forBudget.budget, variant !== CHOSEN);
   renderDataInfo(g);
 
   const extras = [];
@@ -478,7 +502,7 @@ function render() {
 
   wireMoves();
   syncControls();
-  $('#vlabel').innerHTML = `${variant} — ${NOTES[variant][0].split('—')[0].trim()} <span class="sub">· ${surface === 'embed' ? 'embed' : 'Activity'}</span>`;
+  $('#vlabel').innerHTML = `${variant}${variant === CHOSEN ? ' ★' : ''} — ${NOTES[variant][0].split('—')[0].trim()} <span class="sub">· ${surface === 'embed' ? 'embed' : 'Activity'}</span>`;
 }
 
 /* Tombol disamakan dengan state (penting saat state datang dari URL). */
@@ -526,7 +550,7 @@ function renderBudget(parts, isFallback = false) {
   const pct = (used / 6000) * 100;
   const cls = pct > 90 ? 'bad' : pct > 65 ? 'warn' : '';
   $('#budget').innerHTML = `
-    ${isFallback ? '<div class="tiny dim" style="margin-bottom:6px">Diukur dari <b>varian A</b> — kasus terberat, supaya angkanya bisa dibandingkan antar skenario.</div>' : ''}
+    ${isFallback ? '<div class="tiny dim" style="margin-bottom:6px">Diukur dari <b>varian B (DIPILIH)</b> — kasus terberat, supaya angkanya bisa dibandingkan antar skenario.</div>' : ''}
     <div class="kv"><span class="k">Terpakai</span><span class="v ${cls === 'bad' ? 'over' : cls === 'warn' ? 'near' : 'ok'}">${used.toLocaleString('id-ID')} / 6.000</span></div>
     <div class="budget-bar"><div class="f ${cls}" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>
     <div class="tiny dim">${pct.toFixed(1).replace('.', ',')}% dari anggaran · sisa ${(6000 - used).toLocaleString('id-ID')} karakter</div>
