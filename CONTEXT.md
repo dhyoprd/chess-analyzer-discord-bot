@@ -18,9 +18,13 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Pertandingan** — satu slot bracket turnamen knockout: dua pemain yang harus menghasilkan tepat satu pemenang. Berbeda dari game, satu pertandingan bisa memuat beberapa game (game pertama, game ulang, armageddon). Di luar turnamen tidak ada pertandingan — hanya game.
 
-**Langkah (Move)** — satu giliran pemain, dalam notasi SAN. Setiap langkah menyimpan FEN setelahnya, waktu berpikir, eval, dan klasifikasi.
+**Langkah (Move)** — satu giliran pemain, dalam notasi SAN. Setiap langkah menyimpan FEN setelahnya dan waktu berpikir. Eval dan klasifikasi **bukan** milik langkah, melainkan milik **Analisa** — supaya menjalankan analisa ulang tidak menghancurkan hasil sebelumnya.
 
-**Analisa** — proses evaluasi engine atas seluruh langkah sebuah game. Menghasilkan akurasi tiap pemain dan daftar langkah bermasalah.
+**Posisi** — satu keadaan papan yang dievaluasi engine. Satu game dengan N langkah punya N+1 posisi: posisi awal, lalu satu posisi setelah tiap langkah. Engine bekerja per **posisi**, bukan per langkah; satu posisi melayani dua langkah sekaligus — ia menjadi "sesudah" bagi langkah sebelumnya dan "sebelum" bagi langkah berikutnya.
+
+**Analisa** — satu kali evaluasi engine atas seluruh posisi sebuah game. Menghasilkan akurasi tiap pemain dan klasifikasi tiap langkah, keduanya menempel pada analisa itu. Satu game bisa punya beberapa analisa; yang ditampilkan adalah **analisa selesai yang terbaru**. Analisa yang gagal juga tercatat, supaya tidak dicoba ulang tanpa henti.
+
+**Analisa ulang** — menjalankan analisa baru atas game yang sudah pernah dianalisa, menghasilkan catatan analisa tersendiri tanpa menghapus yang lama. Dipicu pemain lewat perintah, bukan otomatis.
 
 **Klasifikasi langkah** — penilaian kualitas satu langkah berdasarkan **selisih win-chance sebelum dan sesudah langkah**, bukan selisih centipawn mentah. Ini mengikuti Lichess. Tiga tingkat:
 
