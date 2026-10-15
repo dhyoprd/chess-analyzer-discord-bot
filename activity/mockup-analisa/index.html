@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOCKUP — tampilan hasil analisa (ticket #7)</title>
+<style>
+/* PROTOTYPE — kode buangan. Menjawab satu pertanyaan, lalu dibuang.
+   Ticket: Mockup: tampilan hasil analisa (#7)
+   Peta:   Peta: Platform Catur Discord (#1)                                   */
+
+:root {
+  --bg: #0b0d12; --panel: #16181d; --panel2: #1e2025; --line: #2b2e36;
+  --text: #e6e8ec; --muted: #9aa1ad; --dim: #6b7280;
+  --gold: #d4af37; --ok: #34d399;
+  --inacc: #fbbf24; --mist: #fb923c; --blun: #f87171;
+  --dc-bg: #313338; --dc-embed: #2b2d31; --dc-line: #3f4147;
+  --dc-text: #dbdee1; --dc-muted: #949ba4; --dc-link: #00a8fc;
+  --sq-l: #b9c2cf; --sq-d: #5b6472; --sq-hi: #d4af37;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text); font-size: 14px; padding-bottom: 88px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1 { font-size: 15px; margin: 0; }
+h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 0 0 10px; }
+h3 { font-size: 13px; margin: 0 0 8px; }
+a { color: var(--dc-link); }
+
+/* ── bingkai halaman ─────────────────────────────────────────────────────── */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.warn { background: #3b2a12; border: 1px solid #7a5a1e; color: #f0d9a8;
+        padding: 9px 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.seg { display: flex; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button {
+  background: none; border: 0; color: var(--muted); padding: 7px 13px; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: inherit;
+}
+.seg button[aria-pressed="true"] { background: var(--panel2); color: var(--text); }
+.seg button:hover { color: var(--text); }
+
+.grid { display: grid; grid-template-columns: 1fr 340px; gap: 14px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.card + .card { margin-top: 12px; }
+.muted { color: var(--muted); }
+.dim { color: var(--dim); }
+.tiny { font-size: 11px; }
+.mono { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+.variant-note { font-size: 12px; color: var(--muted); line-height: 1.55; margin: 0 0 12px; }
+.variant-note b { color: var(--text); }
+
+/* ── Discord ─────────────────────────────────────────────────────────────── */
+.dc { background: var(--dc-bg); border-radius: 10px; padding: 14px; }
+.dc-msg { display: flex; gap: 12px; }
+.dc-av {
+  width: 40px; height: 40px; border-radius: 50%; flex: none;
+  background: linear-gradient(135deg, #5865f2, #8b5cf6);
+  display: grid; place-items: center; font-weight: 700; color: #fff; font-size: 15px;
+}
+.dc-body { min-width: 0; flex: 1; }
+.dc-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+.dc-name { font-weight: 600; color: #f2f3f5; font-size: 15px; }
+.dc-bot {
+  background: #5865f2; color: #fff; font-size: 10px; font-weight: 600;
+  padding: 1px 4px; border-radius: 3px; position: relative; top: -1px;
+}
+.dc-time { font-size: 11px; color: var(--dc-muted); }
+.dc-text { color: var(--dc-text); font-size: 15px; line-height: 1.4; margin-bottom: 6px; }
+
+.dc-embed {
+  background: var(--dc-embed); border-left: 4px solid var(--gold);
+  border-radius: 4px; padding: 12px 14px; max-width: 520px;
+}
+.dc-embed.win { border-left-color: var(--ok); }
+.dc-embed.flat { border-left-color: var(--dim); }
+.emb-author { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.emb-title { font-size: 15px; font-weight: 600; color: #f2f3f5; margin-bottom: 6px; }
+.emb-desc { font-size: 13px; line-height: 1.5; color: var(--dc-text); white-space: pre-wrap; word-break: break-word; }
+.emb-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin-top: 10px; }
+.emb-field.full { grid-column: 1 / -1; }
+.emb-field .fn { font-size: 12px; font-weight: 700; color: #f2f3f5; margin-bottom: 3px; }
+.emb-field .fv { font-size: 13px; line-height: 1.45; color: var(--dc-text); white-space: pre-wrap; word-break: break-word; }
+.emb-foot { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--dc-muted); margin-top: 10px; }
+.emb-thumb { float: right; width: 64px; height: 64px; border-radius: 4px; margin: 0 0 8px 10px;
+             background: #3a3d44; display: grid; place-items: center; font-size: 9px; color: var(--dc-muted); text-align: center; }
+
+/* papan mini (untuk thumbnail) */
+.board {
+  display: grid; grid-template-columns: repeat(8, 1fr); aspect-ratio: 1;
+  border-radius: 4px; overflow: hidden; border: 1px solid var(--line); user-select: none;
+}
+.sq { position: relative; display: grid; place-items: center; }
+.sq.l { background: var(--sq-l); } .sq.d { background: var(--sq-d); }
+.sq .pc { font-size: clamp(11px, 4.4vw, 30px); line-height: 1; }
+.sq.hi::after { content: ''; position: absolute; inset: 0; background: var(--sq-hi); opacity: .38; }
+.coord { position: absolute; font-size: 8px; font-weight: 700; opacity: .55; }
+.coord.f { bottom: 1px; right: 2px; } .coord.r { top: 1px; left: 2px; }
+
+/* ── panel Activity ──────────────────────────────────────────────────────── */
+.act { background: #0f1115; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.act-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.pill { font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line); }
+.pill.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.pill.gold { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 40%, transparent); }
+.pill.mut { color: var(--muted); }
+
+.acc-row { display: flex; gap: 12px; }
+.acc-box { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.acc-box .lbl { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.acc-box .val { font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+.acc-box .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* bilah eval vertikal */
+.evalbar-v { width: 16px; border-radius: 4px; overflow: hidden; background: #1b1e24;
+             border: 1px solid var(--line); position: relative; }
+.evalbar-v .fill { position: absolute; left: 0; right: 0; background: #e8eaed; }
+
+/* grafik eval */
+.evalgraph { width: 100%; height: 92px; display: block; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); }
+
+/* daftar langkah */
+.movelist { max-height: 320px; overflow-y: auto; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 13px; line-height: 1.75; }
+.movelist .mv { cursor: pointer; border-radius: 4px; padding: 0 3px; }
+.movelist .mv:hover { background: #262a33; }
+.movelist .mv.sel { background: var(--gold); color: #10120f; font-weight: 700; }
+.movelist .no { color: var(--dim); margin-right: 5px; }
+.mv.i { color: var(--inacc); } .mv.m { color: var(--mist); } .mv.b { color: var(--blun); }
+.mv.b { font-weight: 700; }
+.mk { font-weight: 800; }
+
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin-top: 8px; }
+.legend b { font-weight: 800; }
+
+/* tabel momen */
+table.moments { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.moments th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px;
+                   text-transform: uppercase; letter-spacing: .06em; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+table.moments td { padding: 6px; border-bottom: 1px solid #21242b; }
+table.moments tr:last-child td { border-bottom: 0; }
+table.moments tr:hover td { background: #1b1e24; }
+.tag { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: .03em; }
+.tag.i { background: color-mix(in srgb, var(--inacc) 20%, transparent); color: var(--inacc); }
+.tag.m { background: color-mix(in srgb, var(--mist) 20%, transparent); color: var(--mist); }
+.tag.b { background: color-mix(in srgb, var(--blun) 20%, transparent); color: var(--blun); }
+
+/* ── panel anggaran ──────────────────────────────────────────────────────── */
+.budget-bar { height: 8px; border-radius: 999px; background: #23262e; overflow: hidden; margin: 6px 0 4px; }
+.budget-bar .f { height: 100%; background: var(--ok); }
+.budget-bar .f.warn { background: var(--inacc); }
+.budget-bar .f.bad { background: var(--blun); }
+.kv { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; border-bottom: 1px solid #21242b; }
+.kv:last-child { border-bottom: 0; }
+.kv .k { color: var(--muted); }
+.kv .v { font-family: ui-monospace, Consolas, monospace; }
+.ok { color: var(--ok); } .over { color: var(--blun); } .near { color: var(--inacc); }
+
+/* ── pesan progres ───────────────────────────────────────────────────────── */
+.prog { background: var(--dc-embed); border-left: 4px solid var(--dim); border-radius: 4px; padding: 10px 12px; max-width: 460px; }
+.prog .t { font-size: 13px; color: var(--dc-text); margin-bottom: 6px; }
+.pbar { height: 6px; background: #23262e; border-radius: 999px; overflow: hidden; }
+.pbar .f { height: 100%; background: var(--gold); }
+
+/* ── tombol bawah ────────────────────────────────────────────────────────── */
+.switcher {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 50;
+  display: flex; align-items: center; gap: 4px; background: #f2f3f5; color: #111;
+  border-radius: 999px; padding: 5px; box-shadow: 0 8px 28px rgba(0,0,0,.55);
+}
+.switcher button {
+  background: none; border: 0; cursor: pointer; font-size: 15px; font-weight: 700;
+  width: 32px; height: 32px; border-radius: 50%; color: #111; font-family: inherit;
+}
+.switcher button:hover { background: #d9dbdf; }
+.switcher .lbl { font-size: 12px; font-weight: 700; padding: 0 6px; min-width: 190px; text-align: center; }
+.switcher .sub { font-weight: 400; color: #555; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <h1>MOCKUP — tampilan hasil analisa</h1>
+      <div class="tiny muted">Ticket <a href="https://github.com/dhyoprd/chess-analyzer-discord-bot/issues/7">#7</a> · peta <a href="https://github.com/dhyoprd/chess-analyzer-discord-bot/issues/1">#1</a> · angka di bawah dihasilkan Stockfish sungguhan</div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="surface">
+        <button data-s="embed" aria-pressed="true">Embed Discord</button>
+        <button data-s="activity" aria-pressed="false">Panel Activity</button>
+      </div>
+      <div class="seg" id="scenario">
+        <button data-c="normal" aria-pressed="true">Normal</button>
+        <button data-c="engine" aria-pressed="false">Lawan komputer</button>
+        <button data-c="abandoned" aria-pressed="false">Ditinggalkan</button>
+        <button data-c="import" aria-pressed="false">Impor</button>
+        <button data-c="oneply" aria-pressed="false">1 ply</button>
+        <button data-c="long" aria-pressed="false">Panjang</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <b>Kode buangan.</b> Ini menjawab pertanyaan “bagaimana hasil analisa ditata”, lalu dibuang.
+    Tidak ada backend, tidak ada penyimpanan, tidak ada penanganan error yang layak.
+    Angka analisa (eval, klasifikasi, akurasi) dihasilkan Stockfish 19 pada 1 juta node/posisi —
+    konfigurasi ADR-0009 — bukan karangan.
+  </div>
+
+  <div class="grid" style="margin-top:14px">
+    <div>
+      <div class="card">
+        <p class="variant-note" id="note"></p>
+        <div id="stage"></div>
+      </div>
+
+      <div class="card">
+        <h2>Kasus khusus &amp; pesan progres</h2>
+        <div id="extras"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Anggaran embed Discord</h2>
+        <div id="budget"></div>
+        <div class="tiny dim" style="margin-top:10px;line-height:1.5">
+          Batas resmi: 6000 karakter gabungan (title + description + field.name + field.value
+          + footer.text + author.name) untuk <b>semua</b> embed dalam satu pesan; 25 field per embed;
+          10 embed per pesan. Angka diukur dari teks yang benar-benar dirender di kiri.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Data yang dipakai</h2>
+        <div id="datainfo"></div>
+      </div>
+
+      <div class="card">
+        <h2>Yang perlu dinilai</h2>
+        <ol class="tiny muted" style="margin:0;padding-left:16px;line-height:1.65">
+          <li>Embed mana yang Anda buka di channel — dan apakah daftar langkahnya kurang/kebanyakan?</li>
+          <li>Di panel Activity: eval bar + daftar, atau grafik + filmstrip, atau daftar yang jadi pusat?</li>
+          <li>Apakah blunder harus <b>selalu</b> ditampilkan walau 20+?</li>
+          <li>Pesan progres: cukup satu baris, atau perlu sisa waktu?</li>
+          <li>Bagaimana membedakan lawan komputer — lencana saja cukup?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="switcher">
+  <button id="prev" title="Varian sebelumnya (←)">←</button>
+  <span class="lbl" id="vlabel"></span>
+  <button id="next" title="Varian berikutnya (→)">→</button>
+</div>
+
+<script src="data/analisa-nyata.js"></script>
+<script src="src/mockup.js"></script>
+</body>
+</html>
