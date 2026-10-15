@@ -1,0 +1,12 @@
+# PROTOTYPE (ticket #7) — berkas buangan, jangan di-commit.
+#
+# Profil Chrome dibuat ulang tiap kali screenshot.py dijalankan, dan wajib ada
+# (tanpa --user-data-dir Chrome gagal secara senyap). 8 MB, tidak ada isinya
+# yang perlu disimpan.
+.chrome-profil/
+
+# Log jalannya skrip.
+data/generate-log.txt
+data/shot-log.txt
+data/runall-log.txt
+data/smoke.json
