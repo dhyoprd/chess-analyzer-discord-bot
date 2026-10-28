@@ -42,7 +42,7 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari **game berating**. Setiap game selesai langsung memperbarui rating — tidak ada pembaruan berkala. Ketidakpastian rating (RD) melebar seiring waktu nyata sejak game berating terakhir, sehingga pemain yang lama hilang kembali dengan rating yang tidak lagi dipercaya penuh.
 
-**Berating** — sebutan untuk game yang **dinilai rating**, dan untuk populasi game itulah statistik rating bermakna. Lawannya adalah game **non-berating**: lawan komputer, game impor, armageddon, walkover, bye, dan game yang ditinggalkan. Hanya game berating yang mengubah rating, dan hanya game berating yang dihitung di blok rating `/stats` serta di klasemen. Game non-berating tetap punya pemain, langkah, dan analisa — ia hanya tidak pernah menyentuh rating.
+**Berating** — sebutan untuk game yang **dinilai rating**, dan untuk populasi game itulah statistik rating bermakna. Lawannya adalah game yang **tidak memenuhi predikat berating**: lawan komputer, game impor, armageddon, dan game yang ditinggalkan. Hanya game berating yang mengubah rating, dan hanya game berating yang dihitung di blok rating `/stats` serta di klasemen. Game non-berating tetap punya pemain, langkah, dan analisa — ia hanya tidak pernah menyentuh rating. **Walkover dan bye bukan game**, jadi keduanya tidak termasuk populasi mana pun dan tidak muncul di rekor.
 
 **Provisional** — status pemain yang ratingnya belum mapan karena **ketidakpastiannya (RD) masih lebar**, bukan karena jumlah game yang sedikit. Ambangnya satu dan berlaku di seluruh platform, termasuk penentuan unggulan turnamen. Pemain provisional tetap tampil di klasemen, dengan penanda. Pemain yang belum pernah memainkan satu pun game berating **belum punya rating** dan belum muncul di klasemen.
 
@@ -56,9 +56,13 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — tapi pertandingannya dimenangkan pemain yang tidak sedang giliran, karena pertandingan knockout wajib menghasilkan tepat satu pemenang. Hasil papan dan hasil pertandingan dicatat terpisah.
 
-**Peringkat** — posisi seorang pemain dalam urutan rating seluruh platform. Peringkat hanya dimiliki pemain yang sudah punya rating; pemain yang belum pernah memainkan game berating tidak punya peringkat, bukan peringkat terakhir. Urutannya rating menurun, lalu jumlah game berating menurun, lalu urutan pendaftaran; pemain provisional ikut bersaing tanpa dipisahkan.
+**Peringkat** — posisi seorang pemain dalam urutan rating seluruh platform. Peringkat hanya dimiliki pemain yang sudah punya rating; pemain yang belum pernah memainkan game berating tidak punya peringkat, bukan peringkat terakhir. Urutannya rating menurun, lalu jumlah game berating menurun, lalu **`player_id` menaik**. Pemain provisional ikut bersaing tanpa dipisahkan.
+
+**Klasemen** — daftar terurut pemain platform menurut **Peringkat**-nya. Hanya memuat pemain yang punya rating; pemain bayangan tidak pernah muncul di sini.
 
 **Tanpa hasil** — hasil sebuah game yang selesai tanpa pemenang dan tanpa remis, yaitu game yang **ditinggalkan**. Dihitung terpisah dari menang, kalah, dan remis, karena papan tidak menyatakan siapa yang menang dan remis bukan kesimpulan yang benar.
+
+**Komposisi** — rincian asal-usul game di blok "semua game" pada `/stats`: **platform**, **impor**, atau **lawan komputer**. Ketiganya berasal dari satu fakta yang sama (asal game), sehingga setiap game jatuh tepat di satu jenis dan jumlahnya selalu cocok dengan total rekor di sebelahnya. Berbeda dari **Berating**, yang merupakan predikat penilaian rating dan memotong populasi di dalam "platform".
 
 **Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya.
 
