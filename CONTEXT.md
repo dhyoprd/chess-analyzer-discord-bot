@@ -6,7 +6,7 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Activity** — aplikasi web tertanam di dalam Discord, dimuat di iframe lewat Embedded App SDK. Di proyek ini: tempat pemain bermain catur dengan papan drag-and-drop. Dibedakan dari "bot" yang berbasis pesan.
 
-**Bot** — aplikasi Discord berbasis slash command dan pesan. Di proyek ini: menyediakan `/challenge`, `/stats`, dan mengelola turnamen. Satu application object Discord merangkap keduanya (Activity dan bot).
+**Bot** — aplikasi Discord berbasis slash command dan pesan. Di proyek ini: menyediakan `/challenge`, `/stats`, `/klasemen`, `/impor`, `/klaim`, dan mengelola turnamen. Satu application object Discord merangkap keduanya (Activity dan bot).
 
 **Game** — satu permainan catur antara dua pemain, dari langkah pertama sampai berakhir. Memiliki varian, format jam, hasil, dan alasan berakhir.
 
@@ -58,7 +58,7 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Peringkat** — posisi seorang pemain dalam urutan rating seluruh platform. Peringkat hanya dimiliki pemain yang sudah punya rating; pemain yang belum pernah memainkan game berating tidak punya peringkat, bukan peringkat terakhir. Urutannya rating menurun, lalu jumlah game berating menurun, lalu **`player_id` menaik**. Pemain provisional ikut bersaing tanpa dipisahkan.
 
-**Klasemen** — daftar terurut pemain platform menurut **Peringkat**-nya. Hanya memuat pemain yang punya rating; pemain bayangan tidak pernah muncul di sini.
+**Klasemen** — daftar terurut pemain platform menurut **Peringkat**-nya, disajikan perintah `/klasemen` sebagai satu kolom **peringkat · rating · nama**. Hanya memuat pemain yang punya rating — tanpa ambang minimum game, karena penanda **Provisional** sudah menyatakan seberapa mapan sebuah angka. Pemain bayangan tidak pernah muncul di sini. Pemain yang sudah **keluar dari guild tetap tampil**, sebab rating tidak hilang saat keanggotaan berubah dan menyembunyikannya akan menggeser peringkat orang lain tanpa ada yang bermain. Klasemen **hanya dirender saat diminta** — tidak ada pesan yang memperbarui diri, karena mengedit pesan tidak memicu notifikasi.
 
 **Tanpa hasil** — hasil sebuah game yang selesai tanpa pemenang dan tanpa remis, yaitu game yang **ditinggalkan**. Dihitung terpisah dari menang, kalah, dan remis, karena papan tidak menyatakan siapa yang menang dan remis bukan kesimpulan yang benar.
 
