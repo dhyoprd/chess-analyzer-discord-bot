@@ -14,7 +14,7 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Pemilih game** — daftar game hidup milik pemain, ditampilkan di Activity saat ia punya lebih dari satu. Memilih satu game membuka papannya. Seorang pemain hanya bisa menempel ke game di mana ia peserta.
 
-**Buka Papan** — tindakan pemain membuka papan sebuah game dari Discord. Berbeda dari **Masuk**, yang menyatakan kehadiran; kehadiran tidak membuka papan, dan papan bisa dibuka tanpa menekan Masuk.
+**Buka Papan** — tindakan pemain membuka papan sebuah game dari Discord. Berbeda dari **Masuk**, yang menyatakan kehadiran; kehadiran tidak membuka papan, dan papan bisa dibuka tanpa menekan Masuk. Untuk pertandingan turnamen, tombolnya ada di pesan pairing. Untuk game santai, tombolnya muncul di **pesan baru ber-mention kedua pemain** yang dikirim saat challenge diterima — bukan di pesan challenge itu sendiri, karena edit pesan tidak memicu notifikasi.
 
 **Pertandingan** — satu slot bracket turnamen knockout: dua pemain yang harus menghasilkan tepat satu pemenang. Berbeda dari game, satu pertandingan bisa memuat beberapa game (game pertama, game ulang, armageddon). Di luar turnamen tidak ada pertandingan — hanya game.
 
@@ -83,7 +83,7 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Impor** — tindakan memasukkan satu game eksternal ke platform lewat tautan atau berkas PGN, untuk dianalisa. Game impor **tidak** mengubah rating. Game yang belum selesai tidak bisa diimpor.
 
-**Challenge** — tawaran bermain dari satu pemain ke pemain lain lewat bot: format jam, pilihan warna, dan batas waktu berlaku. Menerima challenge berarti memulai game. Challenge yang tidak dijawab akan kedaluwarsa.
+**Challenge** — tawaran bermain dari satu pemain ke pemain lain lewat `/challenge`: pesan publik ber-mention lawan dengan tombol Terima/Tolak/Batal. Isinya format jam (preset tetap), warna (putih/hitam/acak — acak diundi saat diterima), dan varian (standar/Chess960). Berlaku **1 jam waktu nyata** lalu kedaluwarsa — ini **bukan** anggota keluarga waktu bot hidup, karena challenge yang lewat tidak merugikan siapa pun. Seorang penantang hanya boleh punya satu challenge terbuka; calon lawan boleh menerima banyak tawaran sekaligus. **Hanya lawan yang disebut** yang boleh menerima atau menolak, dan hanya penantang yang boleh membatalkan; Discord tidak membatasi tombol per-pengguna, jadi hak tekan ditegakkan app-side. Lawan yang menolak tidak bisa ditantang lagi oleh orang yang sama selama 10 menit; kedaluwarsa tidak menjeda. Menerima challenge berarti memulai game — dan **jam catur baru berjalan di langkah pertama**, bukan saat diterima.
 
 **Varian** — bentuk aturan catur yang dimainkan. Proyek ini mendukung **catur standar** dan **Chess960** (posisi awal acak dari 960 kemungkinan).
 
@@ -103,11 +103,11 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Batas waktu pertandingan** — lama bot menunggu pemain menekan Masuk atau menyelesaikan game, dihitung dalam **waktu bot hidup** (bukan waktu nyata), konsisten dengan definisi Ditinggalkan. Lewat batas ini, pertandingan diputuskan sebagai walkover secara otomatis.
 
-**Waktu bot hidup** — penghitung yang **hanya** maju selama proses bot berjalan, dan berhenti saat bot mati. Ia dasar dari seluruh batas waktu di platform: **Ditinggalkan** (24 jam), **Batas waktu pertandingan** (24 jam), **Pendaftaran** (24 jam), dan auto-abandon turnamen (72 jam). Ketiga yang bernilai 24 jam memakai **satu konstanta yang sama**. Karena penghitungnya tidak terlihat pemain, durasi yang tersisa selalu ditampilkan sebagai perkiraan ("sekitar"), bukan janji jam dinding.
+**Waktu bot hidup** — penghitung yang **hanya** maju selama proses bot berjalan, dan berhenti saat bot mati. Ia dasar dari seluruh batas waktu di platform: **Ditinggalkan** (24 jam), **Batas waktu pertandingan** (24 jam), **Pendaftaran** (24 jam), dan auto-abandon turnamen (72 jam). Ketiga yang bernilai 24 jam memakai **satu konstanta yang sama**. Karena penghitungnya tidak terlihat pemain, durasi yang tersisa selalu ditampilkan sebagai perkiraan ("sekitar"), bukan janji jam dinding. **Kedaluwarsa Challenge bukan anggotanya** — ia memakai waktu nyata 1 jam, karena challenge yang lewat tidak merugikan siapa pun dan tawaran yang lahir saat bot mati tidak bisa diterima siapa pun.
 
 **Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam (hitam 80% dari waktu putih), dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
 
-**Lawan komputer** — mode bermain melawan Stockfish pada tingkat preset (800/1200/1600/2000 Elo). **Tidak** memengaruhi rating.
+**Lawan komputer** — mode bermain melawan Stockfish pada tingkat preset (800/1200/1600/2000 Elo). **Tidak** memengaruhi rating. **Tidak** dicapai lewat `/challenge`, yang hanya menghubungkan dua manusia — permukaannya diputuskan ticket Konfigurasi mode lawan komputer.
 
 **State otoritatif** — sumber kebenaran posisi papan. Di proyek ini **backend Python**, bukan Activity. Activity hanya mengirim *niat* langkah; backend yang memvalidasi dan menentukan hasilnya.
 
