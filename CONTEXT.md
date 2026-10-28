@@ -60,7 +60,18 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Pool rating** — ruang lingkup tempat sebuah rating berlaku. Platform bisa punya satu rating untuk semua game, atau rating terpisah per kategori kecepatan (seperti Lichess). Rating selalu terikat pada satu pool. Di platform ini hanya ada **satu pool**: semua game berating — semua kategori kecepatan dan semua varian, termasuk Chess960 — memakai rating yang sama.
 
-**Pemain bayangan** — pemain yang berasal dari game impor (nama di PGN), bukan dari Discord. Tidak punya ID Discord, tidak muncul di klasemen, dan bisa diklaim oleh pemain sungguhan nanti.
+**Pemain bayangan** — pemain yang tidak berasal dari Discord. Ada **dua jenis**, dan aturan klaimnya berbeda:
+
+- **Berbasis akun** — berasal dari tautan Lichess/Chess.com. Punya identitas `(platform, username)`, bisa diklaim.
+- **Berbasis nama** — berasal dari header PGN. Hanya punya nama, **tidak bisa diklaim**, karena nama bukan bukti kepemilikan.
+
+Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama lain.
+
+**Akun eksternal** — identitas pemain di Lichess atau Chess.com, ditulis `platform` + `username`. Satu akun hanya boleh tertaut ke satu pemain, dan seorang pemain boleh punya satu akun per platform.
+
+**Klaim akun** — tindakan pemain menautkan akun eksternal ke profil Discord-nya. Untuk Lichess dibuktikan dengan kode verifikasi di bio akun; Chess.com tidak punya cara pembuktian apa pun, sehingga klaimnya ditandai **belum terverifikasi**. Klaim memindahkan **semua** game akun itu ke pemain sekaligus, dan tautannya bisa dilepas — game yang sudah dipindahkan tetap miliknya.
+
+**Impor** — tindakan memasukkan satu game eksternal ke platform lewat tautan atau berkas PGN, untuk dianalisa. Game impor **tidak** mengubah rating. Game yang belum selesai tidak bisa diimpor.
 
 **Challenge** — tawaran bermain dari satu pemain ke pemain lain lewat bot: format jam, pilihan warna, dan batas waktu berlaku. Menerima challenge berarti memulai game. Challenge yang tidak dijawab akan kedaluwarsa.
 
