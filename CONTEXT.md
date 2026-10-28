@@ -50,7 +50,7 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Pemain putih / Pemain hitam** — dua peran dalam satu game. Bukan "pemain 1" dan "pemain 2" — warna menentukan siapa melangkah lebih dulu.
 
-**Jam catur** — waktu berpikir yang tersisa untuk tiap pemain. Dijeda saat bot mati; **tetap berjalan** saat pemain menutup Activity. Kehabisan waktu = kalah langsung.
+**Jam catur** — waktu berpikir yang tersisa untuk tiap pemain. Model **Fischer**: waktu dasar ditambah increment tiap langkah, disimpan dalam **sentidetik**. Dijeda saat bot mati; **tetap berjalan** saat pemain menutup Activity — keduanya karena jam diukur terhadap **waktu bot hidup**, bukan jam dinding. **Jam belum berjalan sampai langkah pertama**; putih karena itu bebas waktu untuk langkah pertamanya. Kehabisan waktu = kalah langsung, **kecuali** lawan tidak punya bahan skakmat, yang membuatnya remis. Langkah yang tiba dalam **500 ms** setelah jam menyentuh nol tetap sah.
 
 **Ditinggalkan** — status game yang tidak menerima langkah selama 24 jam **waktu bot hidup**. Saat bot mati, hitungannya berhenti — bot yang mati berhari-hari tidak menghukum pemain. Game tetap dianalisa sampai langkah terakhir, tanpa pemenang.
 
@@ -62,11 +62,13 @@ Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — 
 
 **Tanpa hasil** — hasil sebuah game yang selesai tanpa pemenang dan tanpa remis, yaitu game yang **ditinggalkan**. Dihitung terpisah dari menang, kalah, dan remis, karena papan tidak menyatakan siapa yang menang dan remis bukan kesimpulan yang benar.
 
+**Sebab berakhir** — alasan sebuah game selesai, terpisah dari **hasil**-nya. Hasil menjawab "siapa", sebab menjawab "kenapa". Sebabnya: **skakmat**, **menyerah**, **kehabisan waktu**, **ditinggalkan**, dan **bahan tak cukup**. Jenis remis (stalemate, lima puluh langkah, pengulangan tiga kali, kesepakatan) dicatat terpisah sebagai **jenis remis**, bukan sebagai sebab berakhir.
+
 **Komposisi** — rincian asal-usul game di blok "semua game" pada `/stats`: **platform**, **impor**, atau **lawan komputer**. Ketiganya berasal dari satu fakta yang sama (asal game), sehingga setiap game jatuh tepat di satu jenis dan jumlahnya selalu cocok dengan total rekor di sebelahnya. Berbeda dari **Berating**, yang merupakan predikat penilaian rating dan memotong populasi di dalam "platform".
 
-**Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya.
+**Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya. Platform menawarkan **enam preset tetap**: **1+0**, **3+0**, **3+2**, **5+3**, **10+0**, **10+5**. Yang bernama **"standar"** adalah **5+3** — default `/challenge`, dan format seluruh game turnamen. Game armageddon memakai **5 menit untuk putih dan 4 menit untuk hitam, tanpa increment**.
 
-**Kategori kecepatan** — penggolongan game berdasarkan perkiraan durasi totalnya: **bullet**, **blitz**, **rapid**, **classical**. Diturunkan dari format jam, bukan disimpan terpisah. Ambangnya mengikuti Lichess.
+**Kategori kecepatan** — penggolongan game berdasarkan perkiraan durasi totalnya: **bullet**, **blitz**, **rapid**, **classical**. Diturunkan dari format jam, bukan disimpan terpisah. Rumus dan ambangnya mengikuti Lichess: `base_seconds + 40 × increment_seconds`, dengan bullet 30–179 detik, blitz 180–479, rapid 480–1499, classical 1500–21599. Enam preset kita jatuh di bullet dan blitz serta rapid (**3+2 = 260 detik karena itu blitz, bukan rapid**); **tidak ada preset yang jatuh ke classical**.
 
 **Pool rating** — ruang lingkup tempat sebuah rating berlaku. Platform bisa punya satu rating untuk semua game, atau rating terpisah per kategori kecepatan (seperti Lichess). Rating selalu terikat pada satu pool. Di platform ini hanya ada **satu pool**: semua game berating — semua kategori kecepatan dan semua varian, termasuk Chess960 — memakai rating yang sama.
 
@@ -103,9 +105,9 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Batas waktu pertandingan** — lama bot menunggu pemain menekan Masuk atau menyelesaikan game, dihitung dalam **waktu bot hidup** (bukan waktu nyata), konsisten dengan definisi Ditinggalkan. Lewat batas ini, pertandingan diputuskan sebagai walkover secara otomatis.
 
-**Waktu bot hidup** — penghitung yang **hanya** maju selama proses bot berjalan, dan berhenti saat bot mati. Ia dasar dari seluruh batas waktu di platform: **Ditinggalkan** (24 jam), **Batas waktu pertandingan** (24 jam), **Pendaftaran** (24 jam), dan auto-abandon turnamen (72 jam). Ketiga yang bernilai 24 jam memakai **satu konstanta yang sama**. Karena penghitungnya tidak terlihat pemain, durasi yang tersisa selalu ditampilkan sebagai perkiraan ("sekitar"), bukan janji jam dinding. **Kedaluwarsa Challenge bukan anggotanya** — ia memakai waktu nyata 1 jam, karena challenge yang lewat tidak merugikan siapa pun dan tawaran yang lahir saat bot mati tidak bisa diterima siapa pun.
+**Waktu bot hidup** — penghitung yang **hanya** maju selama proses bot berjalan, dan berhenti saat bot mati. Ia dasar dari seluruh batas waktu di platform: **Ditinggalkan** (24 jam), **Batas waktu pertandingan** (24 jam), **Pendaftaran** (24 jam), dan auto-abandon turnamen (72 jam). Ketiga yang bernilai 24 jam memakai **satu konstanta yang sama**. Penghitung ini **adalah jam platform itu sendiri** — **Jam catur** juga mengukur terhadapnya, sehingga tidur atau hibernasi PC tidak pernah membebankan waktu ke pemain. Karena penghitungnya tidak terlihat pemain, durasi yang tersisa selalu ditampilkan sebagai perkiraan ("sekitar"), bukan janji jam dinding. **Kedaluwarsa Challenge bukan anggotanya** — ia memakai waktu nyata 1 jam, karena challenge yang lewat tidak merugikan siapa pun dan tawaran yang lahir saat bot mati tidak bisa diterima siapa pun.
 
-**Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam (hitam 80% dari waktu putih), dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
+**Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam — **5 menit berbanding 4 menit** (hitam 80%), **tanpa increment** — dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Meski remis tidak menguntungkan hitam, armageddon **boleh berakhir dengan cara apa pun**: skakmat dan menyerah dibaca apa adanya dari papan, dan bahan tak cukup dihitung sebagai remis sehingga hitam menang. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
 
 **Lawan komputer** — mode bermain melawan Stockfish pada tingkat preset (800/1200/1600/2000 Elo). **Tidak** memengaruhi rating. **Tidak** dicapai lewat `/challenge`, yang hanya menghubungkan dua manusia — permukaannya diputuskan ticket Konfigurasi mode lawan komputer.
 
