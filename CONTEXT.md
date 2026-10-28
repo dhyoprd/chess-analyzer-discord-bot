@@ -91,7 +91,7 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Pengendali** — pemain yang memegang kendali administratif atas satu turnamen: menutup pendaftaran dan membatalkannya. Awalnya pembuat; berpindah ke peserta terlama yang masih terdaftar bila pembuat mundur sebelum turnamen dimulai.
 
-**Pendaftaran** — jendela saat pemain bisa masuk dan keluar dari turnamen, sebelum bracket disusun. Ditutup oleh pengendali, atau otomatis setelah batas waktu.
+**Pendaftaran** — jendela saat pemain bisa masuk dan keluar dari turnamen, sebelum bracket disusun. Ditutup oleh pengendali, atau otomatis setelah **24 jam waktu bot hidup**. Jendela mulai berjalan saat turnamen dibuat, tidak bisa diperpanjang, dan tidak punya plafon waktu nyata. Seperti **Ditinggalkan**, ia hanya maju saat bot hidup — turnamen yang dibuat lalu ditinggalkan tetap kehilangan jendelanya.
 
 **Bye** — pemain yang lolos satu ronde tanpa bertanding, karena jumlah peserta bukan pangkat dua. Bye diberikan ke unggulan teratas dan **tidak** mengubah rating.
 
@@ -102,6 +102,8 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 **Masuk** — tindakan pemain menekan tombol pada pesan pairing untuk menyatakan kehadirannya. Pertandingan dimulai saat **kedua** pemain sudah masuk. Tidak menekan sampai batas waktu berarti walkover.
 
 **Batas waktu pertandingan** — lama bot menunggu pemain menekan Masuk atau menyelesaikan game, dihitung dalam **waktu bot hidup** (bukan waktu nyata), konsisten dengan definisi Ditinggalkan. Lewat batas ini, pertandingan diputuskan sebagai walkover secara otomatis.
+
+**Waktu bot hidup** — penghitung yang **hanya** maju selama proses bot berjalan, dan berhenti saat bot mati. Ia dasar dari seluruh batas waktu di platform: **Ditinggalkan** (24 jam), **Batas waktu pertandingan** (24 jam), **Pendaftaran** (24 jam), dan auto-abandon turnamen (72 jam). Ketiga yang bernilai 24 jam memakai **satu konstanta yang sama**. Karena penghitungnya tidak terlihat pemain, durasi yang tersisa selalu ditampilkan sebagai perkiraan ("sekitar"), bukan janji jam dinding.
 
 **Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam (hitam 80% dari waktu putih), dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
 

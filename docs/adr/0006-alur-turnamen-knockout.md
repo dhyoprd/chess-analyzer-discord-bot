@@ -18,7 +18,7 @@ Riset juga menemukan bahwa **tidak ada preseden yang bisa ditiru**: Lichess dan 
 
 **Kehadiran.** Pesan pairing terpisah per pertandingan, me-mention kedua pemain, dengan tombol **Masuk**. Pertandingan mulai saat kedua pemain sudah masuk. Discord tidak punya pembatasan tombol per-pengguna, jadi penekan yang bukan peserta ditolak secara ephemeral tanpa mengubah state.
 
-**Batas waktu.** Batas no-show dan batas game ditinggalkan memakai **satu konstanta 24 jam waktu bot hidup**. Walkover bersifat **otomatis**, diumumkan lewat pesan tersendiri di channel. Turnamen bubar sendiri setelah **72 jam waktu bot hidup** tanpa aktivitas, di mana "aktivitas" = tekanan Masuk, hasil pertandingan, atau langkah dalam game turnamen.
+**Batas waktu.** Batas no-show dan batas game ditinggalkan memakai **satu konstanta 24 jam waktu bot hidup**. Walkover bersifat **otomatis**, diumumkan lewat pesan tersendiri di channel. Turnamen bubar sendiri setelah **72 jam waktu bot hidup** tanpa aktivitas, di mana "aktivitas" = tekanan Masuk, hasil pertandingan, atau langkah dalam game turnamen. **Jendela pendaftaran memakai konstanta 24 jam yang sama** — lihat [ADR-0013](0013-jendela-pendaftaran-turnamen.md).
 
 **Hasil.** `games` mencatat **kebenaran papan**; `tournament_matches.winner_id` mencatat **siapa yang maju**. Armageddon remis tetap tercatat remis di `games`; game yang ditinggalkan tetap tanpa pemenang di papan.
 
@@ -42,3 +42,4 @@ Riset juga menemukan bahwa **tidak ada preseden yang bisa ditiru**: Lichess dan 
 - **Definisi `Ditinggalkan` di `CONTEXT.md` kini punya pengecualian turnamen**, dan istilah **Pertandingan** dipisahkan dari **Game** supaya slot bracket tidak lagi bernama sama dengan satu permainan catur.
 - **Satu turnamen aktif per guild** berarti turnamen yang macet memblokir guild sampai dibatalkan atau bubar sendiri — karena itu auto-abandon 72 jam ada.
 - Turnamen yang dibatalkan **tetap menulis entri rating** untuk game yang sudah dimainkan, karena `rating_ledger` bersifat append-only.
+- **Diamendemen oleh [ADR-0013](0013-jendela-pendaftaran-turnamen.md)**: **jendela pendaftaran** — yang di sini hanya disebut "otomatis setelah 24 jam" tanpa dasar jam — ikut dihitung **waktu bot hidup**, memakai **konstanta 24 jam yang sama** dengan batas no-show dan batas game ditinggalkan. Kolom `tournaments.registration_closes_at` (Q54) **diganti** `registration_closes_in_alive_seconds` + `registration_reminder_sent`. Invarian yang muncul: jendela pendaftaran (24 jam) dan auto-abandon (72 jam) sama-sama mulai saat turnamen dibuat, jadi **auto-abandon tidak mungkin menyala selama pendaftaran masih berjalan**. Tick yang memajukan penghitung bot-hidup ditetapkan ADR-0013 hanya sampai kontraknya; intervalnya milik ticket **Perilaku jam catur**.
