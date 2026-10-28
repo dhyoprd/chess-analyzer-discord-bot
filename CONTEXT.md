@@ -40,7 +40,9 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 
 **Akurasi** — skor 0-100% per pemain per game, dihitung dengan rumus Lichess (berbasis win-percentage, bukan centipawn mentah).
 
-**Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari game lawan manusia yang benar-benar dimainkan sampai selesai. **Tidak** mengubah rating: game lawan komputer, game impor, armageddon, walkover, bye, dan game yang ditinggalkan. Game turnamen yang dimainkan ikut mengubah rating. Setiap game selesai langsung memperbarui rating — tidak ada pembaruan berkala. Ketidakpastian rating (RD) melebar seiring waktu nyata sejak game berating terakhir, sehingga pemain yang lama hilang kembali dengan rating yang tidak lagi dipercaya penuh.
+**Rating** — angka kekuatan pemain, memakai sistem Glicko-2. Berubah hanya dari **game berating**. Setiap game selesai langsung memperbarui rating — tidak ada pembaruan berkala. Ketidakpastian rating (RD) melebar seiring waktu nyata sejak game berating terakhir, sehingga pemain yang lama hilang kembali dengan rating yang tidak lagi dipercaya penuh.
+
+**Berating** — sebutan untuk game yang **dinilai rating**, dan untuk populasi game itulah statistik rating bermakna. Lawannya adalah game **non-berating**: lawan komputer, game impor, armageddon, walkover, bye, dan game yang ditinggalkan. Hanya game berating yang mengubah rating, dan hanya game berating yang dihitung di blok rating `/stats` serta di klasemen. Game non-berating tetap punya pemain, langkah, dan analisa — ia hanya tidak pernah menyentuh rating.
 
 **Provisional** — status pemain yang ratingnya belum mapan karena **ketidakpastiannya (RD) masih lebar**, bukan karena jumlah game yang sedikit. Ambangnya satu dan berlaku di seluruh platform, termasuk penentuan unggulan turnamen. Pemain provisional tetap tampil di klasemen, dengan penanda. Pemain yang belum pernah memainkan satu pun game berating **belum punya rating** dan belum muncul di klasemen.
 
@@ -53,6 +55,10 @@ Alasan memakai win-chance dan bukan centipawn: kehilangan 300cp di posisi seimba
 **Ditinggalkan** — status game yang tidak menerima langkah selama 24 jam **waktu bot hidup**. Saat bot mati, hitungannya berhenti — bot yang mati berhari-hari tidak menghukum pemain. Game tetap dianalisa sampai langkah terakhir, tanpa pemenang.
 
 Di dalam turnamen, game yang ditinggalkan **tetap tanpa pemenang di papan** — tapi pertandingannya dimenangkan pemain yang tidak sedang giliran, karena pertandingan knockout wajib menghasilkan tepat satu pemenang. Hasil papan dan hasil pertandingan dicatat terpisah.
+
+**Peringkat** — posisi seorang pemain dalam urutan rating seluruh platform. Peringkat hanya dimiliki pemain yang sudah punya rating; pemain yang belum pernah memainkan game berating tidak punya peringkat, bukan peringkat terakhir. Urutannya rating menurun, lalu jumlah game berating menurun, lalu urutan pendaftaran; pemain provisional ikut bersaing tanpa dipisahkan.
+
+**Tanpa hasil** — hasil sebuah game yang selesai tanpa pemenang dan tanpa remis, yaitu game yang **ditinggalkan**. Dihitung terpisah dari menang, kalah, dan remis, karena papan tidak menyatakan siapa yang menang dan remis bukan kesimpulan yang benar.
 
 **Format jam** — pasangan waktu dasar dan increment, misalnya "3+2" berarti 3 menit dasar dengan tambahan 2 detik tiap langkah. Dua angka inilah yang disimpan; kategorinya diturunkan darinya.
 
