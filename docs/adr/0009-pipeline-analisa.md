@@ -16,7 +16,7 @@ Tiga kendala nyata membentuk keputusan ini:
 
 ### Bentuk pipeline
 
-- **Satu worker, antrian FIFO.** Satu proses Stockfish dipakai ulang untuk seluruh antrian, sehingga net NNUE (98 MB, tertanam di binary) dimuat sekali, bukan sekali per game.
+- **Satu worker, antrian FIFO.** Satu proses Stockfish dipakai ulang untuk seluruh antrian, sehingga net NNUE (98 MB, tertanam di binary) dimuat sekali, bukan sekali per game. *(Ruang lingkupnya **analisa saja**: [ADR-0018](0018-konfigurasi-lawan-komputer.md) memberi mode lawan komputer **proses engine kedua** yang terpisah, karena pemain manusia tidak boleh menunggu di belakang antrean analisa. Angka, anggaran node, dan rumus di ADR ini tidak tersentuh.)*
 - **Engine dimuat saat dibutuhkan, lalu hidup terus** sampai bot mati. Bot tidak memuat engine saat boot, jadi Stockfish yang rusak tidak pernah menghalangi bot untuk start dan melayani permainan.
 - **Analisa berjalan di thread khusus di dalam proses backend**, dengan antrian asyncio. Stockfish tidak pernah menyentuh event loop, sehingga bot tetap responsif.
 - **Pemicu: sinyal setelah commit.** Jalur tulis yang menyelesaikan game menaruh `game_id` ke antrian **setelah** transaksinya commit — bukan di dalamnya. Ini wajib: [ADR-0008](0008-konfigurasi-glicko-2.md) menuntut hasil game dan entri rating ditulis dalam satu transaksi, dan analisa yang memakan puluhan detik tidak boleh memperpanjang transaksi itu.

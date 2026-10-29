@@ -19,7 +19,7 @@ Ticket [Pencocokan klien ke game saat banyak game berjalan di satu channel](http
 
 - **Identitas** diperoleh lewat OAuth `identify`: klien memanggil `authorize()` → kode → backend menukarnya di `https://discord.com/api/oauth2/token` → `GET /users/@me`. Backend memercayai token hasil pertukaran, bukan klaim klien.
 - **Set kandidat**: game di mana pemain terverifikasi itu **peserta**, sudah dimulai (kedua pemain duduk), dan `status=playing`.
-- **Satu game hidup → auto-attach**, dengan header menyebut lawan dan warna. **Lebih dari satu → pemilih game**, ditandai "Turnamen — Ronde N" versus "Santai", dan "Lawan komputer" untuk game melawan Stockfish.
+- **Satu game hidup → auto-attach**, dengan header menyebut lawan dan warna. **Lebih dari satu → pemilih game**, ditandai "Turnamen — Ronde N" versus "Santai", dan **"Lawan komputer — <tingkat>"** untuk game melawan Stockfish. *(Tingkat ditambahkan [ADR-0018](0018-konfigurasi-lawan-komputer.md): game komputer serentak tanpa batas, jadi dua game di tingkat berbeda harus bisa dibedakan sebelum ditekan.)*
 - **Sesi terikat ke satu game**, dengan tombol **ganti game** bila pemain punya game hidup lain.
 - **Tidak ada game hidup → layar kosong + arahan.** Pemain turnamen yang sudah menekan **Masuk** tapi lawannya belum melihat "Menunggu lawan menekan Masuk" sebagai **banner** di atas papan, bukan layar kosong.
 - **Binding tidak disimpan.** Ia diturunkan ulang tiap koneksi dari identitas + kueri DB. Klien memegang pilihannya di memori dan menyatakannya ulang saat menyambung ulang; server memvalidasi bahwa pemain adalah peserta game itu. Menutup-lalu-membuka Activity adalah konteks baru, jadi pemilih muncul lagi.

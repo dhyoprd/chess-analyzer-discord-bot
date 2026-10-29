@@ -111,7 +111,7 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Armageddon** — game penentu terakhir pada pertandingan knockout yang masih seri setelah game ulang. **Putih mendapat waktu lebih banyak** daripada hitam — **5 menit berbanding 4 menit** (hitam 80%), **tanpa increment** — dan **remis berarti hitam menang**. Ini mengikuti konvensi FIDE dan Chess.com. Meski remis tidak menguntungkan hitam, armageddon **boleh berakhir dengan cara apa pun**: skakmat dan menyerah dibaca apa adanya dari papan, dan bahan tak cukup dihitung sebagai remis sehingga hitam menang. Armageddon **tidak** mengubah rating, karena kondisinya sengaja tidak setara.
 
-**Lawan komputer** — mode bermain melawan Stockfish pada tingkat preset (800/1200/1600/2000 Elo). **Tidak** memengaruhi rating. **Tidak** dicapai lewat `/challenge`, yang hanya menghubungkan dua manusia — permukaannya diputuskan ticket Konfigurasi mode lawan komputer.
+**Lawan komputer** — mode bermain melawan Stockfish lewat `/komputer`, pada salah satu dari empat tingkat **berlabel tanpa angka Elo**: Pemula, Menengah, Mahir, Ahli. Tiap tingkat adalah pasangan **`Skill Level` + batas kedalaman** (`depth`), bukan rating — Stockfish sendiri menyatakan kalibrasi Elo-nya ke skala manusia "virtually impossible", dan `UCI_Elo` tidak bisa turun di bawah 1320. Tingkat **tidak** menghitung rating. **Tidak** dicapai lewat `/challenge`, yang hanya menghubungkan dua manusia. Mesin memakai jam yang sama dan bisa kehabisan waktu, tapi **tidak pernah menyerah** dan **selalu menolak tawaran remis**.
 
 **State otoritatif** — sumber kebenaran posisi papan. Di proyek ini **backend Python**, bukan Activity. Activity hanya mengirim *niat* langkah; backend yang memvalidasi dan menentukan hasilnya.
 
@@ -128,5 +128,5 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 ## Istilah yang sengaja dihindari
 
 - **"Bot catur Discord"** untuk menyebut Activity — bot dan Activity adalah dua hal berbeda di sini.
-- **"Elo"** untuk menyebut rating pemain — sistemnya Glicko-2. "Elo" hanya dipakai untuk menyebut preset tingkat lawan komputer.
+- **"Elo"** untuk menyebut rating pemain — sistemnya Glicko-2. **Juga tidak dipakai untuk tingkat lawan komputer**: tingkatnya berlabel (Pemula/Menengah/Mahir/Ahli) dan tidak membawa angka rating apa pun.
 - **"Skor"** tanpa keterangan — selalu sebutkan "akurasi" atau "rating", karena keduanya berbeda.
