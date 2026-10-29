@@ -10,7 +10,9 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Game** — satu permainan catur antara dua pemain, dari langkah pertama sampai berakhir. Memiliki varian, format jam, hasil, dan alasan berakhir.
 
-**Papan** — tampilan permainan di dalam Activity: posisi, langkah, dan jam. Satu Activity menampilkan satu papan pada satu waktu.
+**Papan** — tampilan permainan di dalam Activity: posisi, langkah, dan jam. Satu Activity menampilkan satu papan pada satu waktu. Berbeda dari **Thumbnail papan**, yang berupa gambar diam.
+
+**Thumbnail papan** — gambar posisi akhir sebuah game, dilampirkan ke pesan hasil analisa dan dirujuk embed lewat `attachment://`. Menyorot langkah terakhir, selalu berorientasi putih di bawah, dan **tidak** bisa berinteraksi. Ia penanda identitas game, bukan alat baca — daftar blunder dan urutan langkah di sebelahnya yang dibaca.
 
 **Pemilih game** — daftar game hidup milik pemain, ditampilkan di Activity saat ia punya lebih dari satu. Memilih satu game membuka papannya. Seorang pemain hanya bisa menempel ke game di mana ia peserta.
 

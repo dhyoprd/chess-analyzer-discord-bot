@@ -62,7 +62,9 @@ Semua rumus mengikuti Lichess, diverifikasi dari sumber primernya.
 - **Pesan hasil dikirim ke channel game** (`games.channel_id` — kolom yang ADR-0007 memang pertahankan untuk menempatkan pesan bot).
 - **Mention hanya pihak yang punya `discord_id`**; lawan komputer dan pemain bayangan disebut namanya saja. Game tanpa pemenang (remis, ditinggalkan) ditampilkan normal, hanya tanpa baris pemenang.
 - **Kegagalan dikirim ke channel**, bukan hanya ke log — konsisten dengan prinsip ADR-0008 bahwa kegagalan dicatat keras, bukan disembunyikan.
-- **Format angka**: koma desimal (bahasa bot Bahasa Indonesia), akurasi 1 desimal ("87,4%"), eval 2 desimal dalam pion ("+1,35"), skakmat sebagai "#3". Rating tetap bilangan bulat sesuai ADR-0008.
+- **Format angka**: koma desimal (bahasa bot Bahasa Indonesia), akurasi 1 desimal ("87,4%"), skakmat sebagai "#3". Rating tetap bilangan bulat sesuai ADR-0008.
+
+- **Pesan hasil membawa thumbnail papan.** Satu langkah render berjalan tepat sebelum pesan disusun, di dalam worker yang sama. *(Diputuskan [ADR-0017](0017-render-papan-thumbnail.md): `chess.svg.board()` + `resvg-py`, posisi akhir dengan sorotan langkah terakhir, 320×320 px, dilampirkan lewat `attachment://`. Terukur **14 ms**, jadi tidak menahan antrean FIFO. Gagal render **tidak** menggagalkan pesan — thumbnail dilepas, kegagalan dicatat keras.)*
 
 ### Penyimpanan
 

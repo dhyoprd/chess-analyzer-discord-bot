@@ -20,12 +20,10 @@ dependencies = [
     "discord-py>=2.7",
     "aiosqlite>=0.22",
     "websockets>=17.2",
+    # Render thumbnail papan (ADR-0017). Wheel abi3, membawa binary Rust sendiri —
+    # tanpa langkah instalasi native.
+    "resvg-py>=0.5",
 ]
-
-[project.optional-dependencies]
-# Jalur render PNG belum diputuskan (lihat kabut peta) — Pillow hanya masuk
-# kalau opsi itu yang dipilih.
-render = ["pillow>=12.3"]
 
 [dependency-groups]
 dev = [
