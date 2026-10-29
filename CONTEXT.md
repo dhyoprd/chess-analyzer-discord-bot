@@ -18,6 +18,10 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Buka Papan** — tindakan pemain membuka papan sebuah game dari Discord. Berbeda dari **Masuk**, yang menyatakan kehadiran; kehadiran tidak membuka papan, dan papan bisa dibuka tanpa menekan Masuk. Untuk pertandingan turnamen, tombolnya ada di pesan pairing. Untuk game santai, tombolnya muncul di **pesan baru ber-mention kedua pemain** yang dikirim saat challenge diterima — bukan di pesan challenge itu sendiri, karena edit pesan tidak memicu notifikasi.
 
+**Terhubung (Activity)** — keadaan pemain yang punya setidaknya satu **langganan** WebSocket hidup atas namanya untuk sebuah game. Lawannya **terputus**, dan tidak ada kedudukan ketiga di antaranya. Terhubung berarti Activity-nya sedang menatap game itu — bukan sekadar sedang membuka Activity mana pun. Ini fakta yang dibaca backend, bukan tebakan, karena klien menempel dengan identitas terverifikasi dan langganan terikat ke game.
+
+**Ping giliran** — pesan baru ber-mention di channel game yang memberi tahu pemain bahwa gilirannya tiba, dikirim paling banyak **sekali per ply** dan **dihapus saat giliran itu berakhir**. Ia punya dua ambang, keduanya mengecil mengikuti sisa jam: pemain **terputus** diping cepat karena hampir pasti tidak melihat apa pun, pemain **terhubung** diping jauh lebih lambat karena mungkin sedang berpikir. Ping giliran bukan pengingat waktu — sisa waktu hanya menyertainya, dan tidak ada ping kedua untuk ambang waktu. Ia juga bukan pesan hasil, yang tetap dikirim terpisah dan selalu ber-mention.
+
 **Pertandingan** — satu slot bracket turnamen knockout: dua pemain yang harus menghasilkan tepat satu pemenang. Berbeda dari game, satu pertandingan bisa memuat beberapa game (game pertama, game ulang, armageddon). Di luar turnamen tidak ada pertandingan — hanya game.
 
 **Langkah (Move)** — satu giliran pemain, dalam notasi SAN. Setiap langkah menyimpan FEN setelahnya dan waktu berpikir. Eval dan klasifikasi **bukan** milik langkah, melainkan milik **Analisa** — supaya menjalankan analisa ulang tidak menghancurkan hasil sebelumnya.
