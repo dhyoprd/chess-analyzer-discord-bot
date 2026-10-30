@@ -129,6 +129,8 @@ Keduanya tidak muncul di klasemen dan tidak pernah menyatu otomatis satu sama la
 
 **Instance** — satu sesi Activity yang sedang berjalan, diidentifikasi `instance_id`. Setiap kali Activity dibuka, instance baru dibuat; semua yang bergabung ke instance yang sama mendapat `instance_id` yang sama. Backend **tidak** memakainya untuk mengenali klien atau mencocokkannya ke game — `instance_id` berubah tiap Activity dibuka, jadi ia tidak bisa menjadi kunci apa pun yang bertahan.
 
+**Intent** — deklarasi data apa yang diterima bot dari gateway Discord. Bot ini menyalakan **satu: `guilds`**, dan **nol intent privileged** (`members`, `presences`, `message_content` semuanya mati). Semua permukaan pengguna adalah interaksi — slash command, tombol, Activity — dan `INTERACTION_CREATE` tidak terikat intent mana pun, jadi lampiran `/impor`, nama di `/klasemen`, dan pembacaan pesan hasil sendiri semuanya datang tanpa intent. Nilainya diperiksa **literal `0x1`** saat start.
+
 **Embed** — pesan kaya berformat di Discord. Batas: **6000 karakter gabungan** (title + description + field.name + field.value + footer.text + author.name) untuk semua embed dalam satu pesan; **25 field** per embed; **10 embed** per pesan. Per-field: description 4096, title dan field.name 256, **field.value 1024**, footer.text 2048. Yang mengikat untuk daftar langkah adalah `field.value` 1024, bukan total 6000. Discord **menghitung** penanda markdown seperti `**tebal**` sebagai bagian dari batas ini.
 
 ## Istilah yang sengaja dihindari
