@@ -32,7 +32,7 @@ Glosarium domain. Hanya istilah dan artinya — tanpa detail implementasi.
 
 **Analisa** — satu kali evaluasi engine atas seluruh posisi sebuah game. Menghasilkan akurasi tiap pemain dan klasifikasi tiap langkah, keduanya menempel pada analisa itu. Satu game bisa punya beberapa analisa; yang ditampilkan adalah **analisa selesai yang terbaru**. Analisa yang gagal juga tercatat, supaya tidak dicoba ulang tanpa henti.
 
-**Analisa ulang** — menjalankan analisa baru atas game yang sudah pernah dianalisa, menghasilkan catatan analisa tersendiri tanpa menghapus yang lama. Dipicu pemain lewat perintah, bukan otomatis.
+**Analisa ulang** — menjalankan analisa baru atas game yang sudah pernah dianalisa, menghasilkan catatan analisa tersendiri tanpa menghapus yang lama. Dipicu pemain lewat perintah `/analisa-ulang`, bukan otomatis. Boleh dijalankan **siapa pun**, dengan jatah **1 per pemain per 10 menit** yang baru terpakai bila permintaannya benar-benar masuk antrean — penolakan karena tautan salah atau game yang tidak sah tidak memakan jatah. Analisa ulang menulis baris **baru**; yang ditampilkan adalah analisa selesai terbaru, sehingga angka di `/stats` ikut bergeser.
 
 **Klasifikasi langkah** — penilaian kualitas satu langkah berdasarkan **selisih win-chance sebelum dan sesudah langkah**, bukan selisih centipawn mentah. Ini mengikuti Lichess. Tiga tingkat:
 
